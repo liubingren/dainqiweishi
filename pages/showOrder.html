@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<title>设置</title>
+	<link rel="stylesheet" type="text/css" href="../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+	<link rel="stylesheet" type="text/css" href="../css/common.css" />
+
+	<style>
+		body {
+			background: #ebeeee
+		}
+
+		p {
+			heigth: 1.3rem;
+			line-height: 1.3rem;
+			padding-top: 0.5rem;
+			font-size: 0.8rem;
+			text-align: center;
+			color: #484848;
+		}
+
+		.blue_line {
+			width: 4%;
+			margin-left: 48%;
+			height: 2px;
+			background: #007ac6;
+		}
+
+		.timeText {
+			text-align: center;
+			font-size: 0.7rem;
+			margin: 0.5rem auto;
+			color: #787878
+		}
+
+		.content {
+			width: 100%;
+			background: #fff;
+			padding: 2%;
+			margin-top: 4rem;
+		}
+
+		.content span {
+			height: 1.9rem;
+			line-height: 1.9rem;
+		}
+
+		input[type='date'] {
+			border: #787878 solid 1px;
+			border-radius: 5px;
+			height: 1.9rem;
+			line-height: 1.9rem;
+			min-height: 1.9rem;
+			font-size: 0.7rem;
+			padding-left: 0.25rem;
+			width: 40%;
+			text-align: center;
+		}
+
+		.labelText {
+			width: 10%;
+			text-align: center;
+			height: 1.9rem;
+			line-height: 1.9rem;
+		}
+
+		.generateOrder {
+			width: 30%;
+			margin-left: 35%;
+			background: #28bcf7;
+			color: #fff;
+			text-align: center;
+			height: 36px;
+			line-height: 36px;
+			float: left;
+		}
+
+		table {
+			width: 93%;
+			border: #aaa solid 1px;
+			margin: 0.5rem auto;
+		}
+
+		td {
+			text-align: center;
+			border: #fff solid 1px;
+		}
+
+		thead td {
+			height: 1.3rem;
+			line-height: 1.3rem;
+			font-size: 0.7rem;
+			color: #fff;
+			background-color: #66afdc;
+			padding: 0.2rem
+		}
+
+		tbody td {
+			height: 1.8rem;
+			line-height: 1.8rem;
+			font-size: 0.8rem;
+			color: #484848;
+			background-color: #b3d7ef;
+			font-weight: 600
+		}
+
+		.thead_unit {
+			font-size: 0.6rem !important;
+			color: #fff;
+			margin-top: -0.5rem;
+		}
+
+		.echartBox {
+			background: white;
+			margin-top: 0.4rem;
+		}
+
+		.barChart {
+			width: 100%;
+			height: 14rem;
+			padding-top:1rem;
+		}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav">
+		<div class="aui-pull-left aui-btn" onclick="turnBack()" tapmode>
+			<span class="aui-iconfont aui-icon-left"></span>
+		</div>
+		<div class="aui-title">生成账单</div>
+	</header>
+	<div class="content">
+		<P>统计时间</P>
+		<div class="blue_line"> </div>
+		<div class="timeText" id="timeText">2018-06-01至2018-06-25</div>
+		<table>
+			<thead>
+				<tr>
+					<td>
+						<div class="textrow">期间用电</div>
+						<div class="thead_unit">（kWh）</div>
+					</td>
+					<td>
+						<div class="textrow">电费单价</div>
+						<div class="thead_unit">（元/kWh）</div>
+					</td>
+					<td>
+						<div class="textrow">总电费</div>
+						<div class="thead_unit">（元）</div>
+					</td>
+				</tr>
+			</thead>
+			<tbody id="tableContent">
+				<tr>
+					<td>5.38</td>
+					<td>0.75</td>
+					<td>4.03</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="echartBox">
+		<p>每日电费统计</p>
+		<div class="blue_line"> </div>
+		<div id="echart" class="barChart">
+
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<!-- <script type="text/javascript" src="../script/echarts.min.js"></script> -->
+<script type="text/javascript" src="../script/echarts_new.js"></script>
+<script type="text/javascript">
+	apiready = function() {
+		api.parseTapmode();
+		generateOrder()
+	};
+
+	//生成账单
+	function generateOrder() {
+		var startTime = api.pageParam.startT;
+		var endTime = api.pageParam.endT;
+		var id = api.pageParam.id;
+		$("#timeText").html(startTime + "至" + endTime)
+		api.showProgress({
+			style: 'default',
+			animationType: 'fade',
+			title: '正在生成...',
+			text: '请稍候...',
+			modal: false
+		});
+		$.ajax({
+			type: "get",
+			url: HEADER + "app/meter/check_getMeterBill.do",
+			data: {
+				"meter_id": id,
+				"begindate": startTime,
+				"enddate": endTime
+			},
+			success: function(data) {
+				// console.log(JSON.stringify(data));
+				api.hideProgress();
+				if (data.code === 1) {
+					var msg_chart = data.data.every_day_data;
+					var msg_tabel = data.data.usew;
+					var html = "";
+					var xAxis = []; //横轴对应的时间段
+					var yAxis = [];
+					var startNum = 0;
+					var endNum = 100;
+					var barWidth = "11";
+					var feeset = msg_tabel.ele_price;
+					for (var i = 0; i < msg_chart.length; i++) {
+						xAxis.push(msg_chart[i].date); //横轴对应的时间段或日期
+						yAxis.push(msg_chart[i].fee); //纵坐标：电费
+					};
+					//下面处理柱状图居中显示
+					var countL = 0; //从左数数据为0或空的个数
+					var countR = 0; //从右数数据为0或空的个数
+					for (var j = 0; j < yAxis.length; j++) {
+						if (yAxis[j] == 0 || yAxis[j] == "" || yAxis[j] == null) {
+							countL++;
+						} else {
+							break;
+						}
+					}
+					for (var j = yAxis.length - 1; j >= 0; j--) {
+						if (yAxis[j] == 0 || yAxis[j] == "" || yAxis[j] == null) {
+							countR++;
+						} else {
+							break;
+						}
+					}
+					var len = yAxis.length;
+					if (countL != 0 && countL != "0") {
+						startNum = (countL / len) * 100;
+					}
+					if (countR != 0 && countR != "0") {
+						endNum = (1 - (countR / (len - countL))) * 100;
+					};
+					if ((xAxis.length - countL - countR) > 15) {
+						barWidth = "45%";
+					}
+					//用电量||电价||总电费
+					html = "<tr>" +
+						"		<td>" + (msg_tabel.w != null ? msg_tabel.w : "---") + "</td>" +
+						"		<td>" + (msg_tabel.ele_price != null ? msg_tabel.ele_price : "---") + "</td>" +
+						"		<td>" + (msg_tabel.fee != null ? msg_tabel.fee : "---") + "</td>" +
+						"  </tr>";
+					$("#tableContent").html(html); //表格的tbody
+					var series = [{
+						name: "电费",
+						type: 'bar',
+						barWidth: barWidth,
+						data: yAxis
+					}];
+					showBarEcharts(xAxis, series, startNum, endNum);
+				} else {
+					alert(data.msg)
+					$("#tableContent").html("");
+				}
+			},
+			error: function(data) {
+				api.hideProgress();
+				alert("请求失败,请检查网络!");
+			}
+		});
+	}
+
+
+	//显示用户当天用电曲线
+	function showBarEcharts(xAxis, series, startNum, endNum) {
+		// 先销毁之前绘制的图表
+		echarts.dispose(document.getElementById('echart'));
+		// 基于准备好的dom，初始化echarts实例
+		var myChart = echarts.init(document.getElementById('echart'));
+		// 指定图表的配置项和数据
+		option = {
+			title: {
+				text: ''
+			},
+			tooltip: {
+				trigger: 'axis',
+				axisPointer: { // 坐标轴指示器，坐标轴触发有效
+					type: 'line' // 默认为直线，可选为：'line' | 'shadow'
+				},
+				formatter: {
+
+				}
+				// position: function(point, params, dom, rect, size) {
+				// 	// 固定在顶部
+				// 	return ["30%", "15%"];
+				// }
+			},
+			legend: {
+				data: ["电费"]
+			},
+			grid: {
+				left: '4%',
+				right: '4%',
+				bottom: '15%',
+				containLabel: true
+			},
+			dataZoom: [{
+				type: 'inside',
+				show: true,
+				xAxisIndex: [0],
+				start: startNum,
+				end: endNum, //显示横轴数据总数的百分比
+				zoomLock: true //只能平移，不能缩放(inside里面为false就可以双指缩放)
+			}],
+			xAxis: [{
+				name: "日期",
+				// offset:12,
+				type: 'category',
+				data: xAxis,
+				// 使用函数模板，函数参数分别为刻度数值（类目），刻度的索引
+				axisLabel: {
+					formatter: function(value, index) {
+						// console.log("value:" + value+"value.length:"+value.length);
+						if (value.length == 23) {
+							var split = value.split("-");
+							var text2 = split[1] * 1 + "月";
+							return text2;
+						} else if (value.length == 10) {
+							var date = new Date(value);
+							var texts = [(date.getMonth() + 1), date.getDate()];
+							if (index === 0) { //让第一个显示年
+								texts.unshift(date.getFullYear());
+							}
+							return texts.join('/');
+						}
+					}
+				},
+				axisTick: {
+					alignWithLabel: true
+				}
+			}],
+			yAxis: [{
+				// name:"电费",
+				type: 'value'
+			}],
+			series: series
+		};
+		// 使用刚指定的配置项和数据显示图表。
+		myChart.setOption(option);
+	}
+</script>
+
+</html>

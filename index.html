@@ -1,0 +1,338 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>底部导航</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./css/aui.2.0.css" />
+
+    <style>
+        header {
+            background-color: #f2f2f2;
+        }
+        /*header ul li {
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            display: none;
+            color: #323237;
+            position: relative;
+            font-size: 12px;
+        }*/
+
+        /*header ul li.active {
+            display: block;
+        }*/
+
+        #footer {
+            background-color: white;
+        }
+
+        #footer ul li {
+            padding-top: 30px;
+            padding-bottom: 4px;
+            background: url() no-repeat center 2px;
+            background-size: auto 30px;
+            text-align: center;
+            margin-top: 7px;
+            font-size: 14px;
+        }
+
+        #footer ul li.active {
+            color: #2e59bd;
+        }
+
+        #footer ul li:nth-child(1) {
+            background-image: url(./image/mainPage/mainpage_gray.png);
+            background-size: auto 25px;
+        }
+
+        #footer ul li:nth-child(2) {
+            background-image: url(./image/mainPage/meter_gray.png);
+            background-size: auto 25px;
+        }
+
+        #footer ul li:nth-child(3) {
+            background-image: url(./image/mainPage/set_gray.png);
+            background-size: auto 25px;
+        }
+
+        #footer ul li:nth-child(1).active {
+            background-image: url(./image/mainPage/mainpage_blue.png);
+            background-size: auto 25px;
+        }
+
+        #footer ul li:nth-child(2).active {
+            background-image: url(./image/mainPage/meter_blue.png);
+            background-size: auto 25px;
+        }
+
+        #footer ul li:nth-child(3).active {
+            background-image: url(./image/mainPage/set_blue.png);
+            background-size: auto 25px;
+        }
+
+        .flex-con {
+            overflow: auto
+        }
+        /*软件更新*/
+    </style>
+</head>
+
+<body>
+    <div id="wrap" class="flex-wrap flex-vertical">
+        <div id="main" class="flex-con">
+
+        </div>
+        <div id="footer" class="border-t">
+            <ul class="flex-wrap">
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con active">首页</li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con" id="news">电表
+                    <!-- <div class="aui-badge"></div> -->
+                </li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">设置</li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="script/api.js"></script>
+<script type="text/javascript" src="script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="script/common.js"></script>
+<script type="text/javascript">
+    var ajpush
+    apiready = function() {
+        api.setStatusBarStyle({
+            style: 'light',
+            color: '#fff'
+        });
+        funIniGroup();
+        api.addEventListener({
+            name: 'refreshnewsCount'
+        }, function(ret, err) {
+            checkNewsCount()
+        });
+        checkUser();
+        // checkUpdate()
+        // checkNewsCount();
+        exit_app();
+    }
+
+    //检测用户是否登录了
+    function checkUser() {
+        var userInfo = $api.getStorage("userInfo");
+        // console.log("用户userInfo:" + JSON.stringify(userInfo))
+        if (userInfo) {
+            var name = userInfo.username;
+            var pwd = userInfo.password;
+            // console.log(name+"+"+pwd)
+            $.ajax({
+                type: "post",
+                url: HEADER + 'app/login/login.do',
+                data: {
+                    "username": name,
+                    "password": pwd
+                },
+                success: function(data) {
+                    // console.log("登录："+JSON.stringify(data));
+                    if (data.code === 1) {
+                        $api.setStorage("userInfo", {
+                            "username": username,
+                            "password": password
+                        });
+                        jpushFn(data.data)
+                        // api.closeWin();
+                    } else {
+                        $api.rmStorage("userInfo");
+                        alert("请重新登录！")
+                        api.openWin({
+                            name: 'login',
+                            url: 'pages/login.html'
+                        });
+                    }
+                }
+            });
+        } else {
+            api.openWin({
+                name: 'login',
+                url: 'pages/login.html'
+            });
+        }
+    }
+
+    function jpushFn(username) {
+        console.log("推送" + username);
+        var ajpush = api.require('ajpush');
+        var param = {
+            alias: 'lijianrong',
+            tags: []
+        };
+        console.log("param" + JSON.stringify(param));
+        ajpush.bindAliasAndTags(param, function(ret) {
+            var statusCode = ret.statusCode;
+            console.log("绑定返回值" + statusCode);
+        });
+        console.log("1111");
+        var systemType = api.systemType;
+        if (systemType == "android") {
+            ajpush.init(function(ret) {
+                console.log("初始化极光推送(只有安卓有用)：" + JSON.stringify(ret))
+                if (ret && ret.status) {
+                    api.addEventListener({
+                        name: 'appintent'
+                    }, function(ret, err) {
+                        if (ret && ret.appParam.ajpush) {
+                            var ajpush = ret.appParam.ajpush;
+                            var id = ajpush.id;
+                            var title = ajpush.title;
+                            var content = ajpush.content;
+                            var extra = ajpush.extra;
+                        }
+                    })
+                }
+            });
+        } else {
+            api.addEventListener({
+                name: 'noticeclicked'
+            }, function(ret, err) {
+                console.log("noticeclicked" + JSON.stringify(ret));
+                if (ret && ret.value) {
+                    var ajpush = ret.value;
+                    var content = ajpush.content;
+                    var extra = ajpush.extra;
+                }
+            })
+            api.addEventListener({
+                name: 'pause'
+            }, function(ret, err) {
+                // onPause(); //监听应用进入后台，通知jpush暂停事件
+            })
+            api.addEventListener({
+                name: 'resume'
+            }, function(ret, err) {
+                // onResume(); //监听应用恢复到前台，通知jpush恢复事件
+            })
+        }
+    }
+
+    // 检测更新
+    function checkUpdate() {
+        var mam = api.require('mam');
+        mam.checkUpdate(function(ret, err) {
+            if (ret) {
+                // console.log(JSON.stringify(ret));
+                var result = ret.result;
+                if (result.update == true && result.closed == false) {
+                    var source = result.source
+                    var state = ret.state
+                    var percent = ret.percent
+                    var savePath = ret.savePath
+                    var updateTip = result.updateTip
+                    var winHeight = api.winHeight
+                    var winWidth = api.winWidth
+                        // console.log(winHeight + "+" + winWidth)
+                    api.openFrame({
+                        name: 'updatePage',
+                        url: 'pages/updatePage.html',
+                        rect: {
+                            x: 0,
+                            y: 0,
+                            w: winWidth,
+                            h: winHeight
+                        },
+                        pageParam: {
+                            source: 1,
+                            state: 2,
+                            savePath: 4,
+                            updateTip: 5
+                        }
+                    });
+                }
+            }
+        })
+    }
+
+    // 未读消息数量
+    function checkNewsCount() {
+        $.ajax({
+            url: HEADER + 'app/message/check_countMessage.do',
+            type: 'get',
+            success: function(data) {
+                // console.log(JSON.stringify(data));
+                var allcount = formatnum(data.data.all);
+                // console.log(allcount)
+                var alarmCount = data.data.alarmCount;
+                var noticeCount = data.data.noticeCount;
+                var maintenanceCount = data.data.maintenanceCount;
+                $api.setStorage('alarmCount', alarmCount);
+                $api.setStorage('noticeCount', noticeCount);
+                $api.setStorage('maintenanceCount', maintenanceCount);
+                if (allcount <= 0) {
+                    var html = "信息";
+                } else {
+                    var html = '信息<div class="aui-badge">' + allcount + '</div>'
+                }
+                $("#news").html(html)
+            }
+        });
+    }
+
+    //底部导航栏跳转
+    function funIniGroup() {
+        // var eHeaderLis = $api.domAll('header li')
+        api.openFrameGroup({
+            name: 'group',
+            scrollEnabled: false,
+            rect: {
+                x: 0,
+                y: 0,
+                w: api.winWidth,
+                h: $api.dom('#main').offsetHeight
+            },
+            index: 0,
+            frames: [{
+                name: 'mainpage',
+                url: 'pages/mainpage.html',
+                bounces: true
+            }, {
+                name: 'metersList',
+                url: 'pages/meters.html',
+                bounces: false
+            }, {
+                name: 'setting',
+                url: 'pages/setting.html',
+                bounces: false
+            }]
+        }, function(ret, err) {
+
+        });
+    };
+
+
+    // 随意切换按钮
+    function randomSwitchBtn(tag) {
+        if (tag == $api.dom('#footer li.active')) return;
+        var eFootLis = $api.domAll('#footer li'),
+            // eHeaderLis = $api.domAll('header li'),
+            index = 0;
+        for (var i = 0, len = eFootLis.length; i < len; i++) {
+            if (tag == eFootLis[i]) {
+                index = i;
+            } else {
+                $api.removeCls(eFootLis[i], 'active');
+                // $api.removeCls(eHeaderLis[i], 'active');
+            }
+        }
+        $api.addCls(eFootLis[index], 'active');
+        // $api.addCls( eHeaderLis[index], 'active');
+        api.setFrameGroupIndex({
+            name: 'group',
+            index: index
+        });
+    };
+</script>
+
+</html>

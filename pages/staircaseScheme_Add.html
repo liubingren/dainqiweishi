@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>添加峰平谷方案</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+
+    <style>
+        html,
+        body {
+            background: white
+        }
+
+        p {
+            heigth: 1.3rem;
+            line-height: 1.3rem;
+            padding-top: 0.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: #484848;
+        }
+
+        .blue_line {
+            width: 4%;
+            margin-left: 48%;
+            height: 2px;
+            background: #007ac6;
+        }
+
+        .formBox .aui-row {
+            width: 70%;
+            margin: 0.7rem 15%;
+            height: 2rem;
+            line-height: 2rem;
+        }
+
+        input[type='text'] {
+            /*border: #007ac6 solid 1px;*/
+            border: #484848 solid 1px;
+            border-radius: 5px;
+            height: 1.2rem;
+            line-height: 1.2rem;
+            min-height: 2rem;
+            font-size: 0.7rem;
+            padding-left: 0.25rem;
+        }
+
+        .submitAddBtn {
+            height: 1.8rem;
+            line-height: 1.8rem;
+            width: 30%;
+            margin: 1rem 35%;
+            text-align: center;
+            background: linear-gradient(#9ed8f6, #007ac6);
+            border-radius: 3px;
+            color: white;
+        }
+
+        .aui-title-blue {
+            color: #007ac6;
+        }
+
+        .aui-title-blue span {
+            color: red
+        }
+
+        #province+.icon_down {
+            float: left;
+            position: relative;
+            top: -2rem;
+            left: 82%;
+            color: black;
+            font-size: 0.7rem;
+            background: url('../image/meters/icon_down.png') no-repeat;
+            background-size: 90%;
+            background-position: 0 0.75rem;
+            /*border: red solid 1px;*/
+            width: 0.8rem;
+            opacity: 0.9;
+        }
+
+        #city+.icon_down {
+            float: left;
+            position: relative;
+            top: -2rem;
+            left: 82%;
+            color: black;
+            font-size: 0.7rem;
+            background: url('../image/meters/icon_down.png') no-repeat;
+            background-size: 90%;
+            background-position: 0 0.75rem;
+            /*border: red solid 1px;*/
+            width: 0.8rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav">
+        <div class="aui-pull-left aui-btn" onclick="turnBack()" tapmode>
+            <span class="aui-iconfont aui-icon-left"></span>
+        </div>
+        <div class="aui-title" id="title">阶梯方案</div>
+    </header>
+    <div class="aui-content">
+        <p>新增阶梯方案</p>
+        <div class="blue_line"> </div>
+        <div class="formBox">
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>开始度数</div>
+                <div class="aui-col-xs-8">
+                    <input type="text" id="startw" onchange="checkInteger(this)" />
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>结束度数</div>
+                <div class="aui-col-xs-8">
+                    <input type="text" id="endw" onchange="compareStartAndEnd()" />
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>价格</div>
+                <div class="aui-col-xs-8">
+                    <input type="text" id="price" onchange="checkInteger(this)" />
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue">&nbsp;&nbsp;增量价格</div>
+                <div class="aui-col-xs-8">
+                    <input type="text" id="addPrice" onchange="checkInteger(this)" />
+                </div>
+            </div>
+        </div>
+        <div class="submitAddBtn" tapmode onclick="submitAdd()">新增</div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+
+<script type="text/javascript">
+    var toast
+    apiready = function() {
+        api.parseTapmode()
+        toast = new auiToast();
+        var startw = api.pageParam.startw
+        var name = api.pageParam.name
+        $("#title").html(name)
+        console.log(startw);
+        $("#startw").val(startw);
+        if (startw == undefined || startw == "undefined") {
+            $("#startw").html("")
+        } else {
+            $("#startTime").html(startw);
+            $("#startw").prop("disabled", true)
+        }
+    };
+
+    function submitAdd() {
+        var id = api.pageParam.id
+        var startw = $("#startw").val()
+            // $("#startw").prop("disabled", true)
+        var endw = $("#endw").val()
+        var price = $("#price").val()
+        var addPrice = $("#addPrice").val()
+        console.log(id + "+" + startw + "+" + endw + "+" + price + "+" + addPrice);
+        if (!startw || !endw || !price || !addPrice) {
+            alert("带“*”项必须选择或填写，不能为空！")
+        } else {
+            if (parseInt(startw) < parseInt(endw)) {
+                var url = HEADER + 'app/ladderPrice/add_addLadderPrice.do'
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    data: {
+                        "p_id": id,
+                        "startw": startw,
+                        "endw": endw,
+                        "price": price,
+                        "addPrice": addPrice
+                    },
+                    success: function(data) {
+                        console.log(JSON.stringify(data));
+                        if (data.code == 1) {
+                            // 刷新详情页数据
+                            api.sendEvent({
+                                name: 'refreshPage'
+                            });
+                            toast.success({
+                                title: "新增成功",
+                                duration: 2000
+                            });
+                        } else {
+                            toast.fail({
+                                title: data.msg,
+                                duration: 2000
+                            });
+                        }
+                    }
+                })
+            } else {
+                alert("结束度数必须大于开始度数！")
+            }
+        }
+    }
+
+    function compareStartAndEnd() {
+        var value = $("#endw").val() + "";
+        if (value == "NaN") {
+            alert("请输入正确的数字!");
+            $("#endw").val("");
+        } else if (value * 1 < 0) {
+            ("请输入正数！")
+            $("#endw").val("");
+        } else {
+            $("#endw").val(parseInt(Math.round(value)));
+            var startw = $("#startw").val()
+            var endw = $("#endw").val()
+            console.log();
+            if(startw){
+                if (startw >= endw) {
+                    alert("开始度数必须小于结束度数！")
+                    $("#endw").val("")
+                }
+            }else{
+                $("#startw").val(0)
+            }
+        };
+    }
+</script>
+
+</html>

@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no">
+    <title>电表详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+
+    <style>
+        html {}
+
+        body {
+            color: #484848;
+        }
+
+        .topBox {
+            /*border: blue solid 1px;*/
+            background: linear-gradient(#9ed8f6, #007ac6);
+        }
+
+        .topBox_row {
+            width: 100%;
+            color: white;
+            text-align: center;
+        }
+
+        .topBox_row:first-of-type {
+            padding-top: 1.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .topBox_row:nth-of-type(2) {
+            /*border: red solid 1px;*/
+            padding: 0.3rem 0;
+        }
+
+        .topBox_row:nth-of-type(3) {
+            /*border: red solid 1px;*/
+            font-size: 0.6rem;
+        }
+
+        .topBox_row:nth-of-type(4) {
+            /*border: white solid 1px;*/
+            font-size: 0.6rem;
+        }
+
+        .topBox_row:nth-of-type(5) {
+            padding: 0.5rem 0;
+            /*border: white solid 1px;*/
+        }
+
+        .row_left {
+            width: 10%;
+            padding-left: 2%;
+            float: left;
+        }
+
+        .row_center_text {
+            width: 80%;
+            /*margin:0 20% ;*/
+            float: left;
+            text-align: center;
+        }
+
+        .meter_imgBox {
+            /*border: blue solid 1px;*/
+            width: 16%;
+            height: 3.1rem;
+            margin: 0.3rem 42%;
+            background: url('../image/meters/meter_white.png') no-repeat;
+            background-size: 100%;
+        }
+
+        .edit_imgBox {
+            /*border: blue solid 1px;*/
+            width: 0.6rem;
+            height: 0.6rem;
+            background: url('../image/meters/icon_edit_white.png') no-repeat;
+            background-position: center;
+            background-size: 100%;
+            position: relative;
+            top: 0.15rem;
+        }
+
+        .delete_imgBox {
+            /*border: blue solid 1px;*/
+            width: 0.6rem;
+            height: 0.6rem;
+            background: url('../image/meters/icon_delete_white.png') no-repeat;
+            background-position: center;
+            background-size: 100%;
+            position: relative;
+            top: 0.15rem;
+        }
+
+        .whiteText {
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .whiteTitle {
+            color: #eee;
+            font-size: 0.6rem;
+        }
+
+        .middleBox {
+            /*border: red solid 1px;*/
+            margin-top: 0.5rem;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        td {
+            width: 33.33%
+        }
+
+        td div {
+            border: #eee solid 1px;
+            height: 4.5rem;
+            line-height: 4.5rem;
+            background: white;
+            /*margin:0.15rem;*/
+        }
+
+        #doubleRows div {
+            height: 9rem;
+        }
+
+        .left_content {
+            margin: 0.05rem 0.1rem 0.05rem 0;
+            padding-top: 1rem;
+        }
+
+        .center_content {
+            margin: 0.05rem 0.05rem;
+            padding-top: 1rem;
+        }
+
+        .right_content {
+            margin: 0.05rem 0 0.05rem 0.1rem;
+            padding-top: 1rem;
+        }
+
+        .darkText {
+            color: #484848;
+            text-align: center;
+            font-weight: 900;
+            font-size: 0.75rem;
+            height: 0.8rem !important;
+            line-height: 0.8rem!important;
+            border: none;
+        }
+
+        .grayText {
+            color: #787878;
+            text-align: center;
+            /*font-weight: 900;*/
+            font-size: 0.6rem;
+            border: none;
+            height: 0.8rem !important;
+            line-height: 0.8rem!important;
+        }
+
+        .bottomRow {
+            width: 100%;
+            height: 2rem;
+            line-height: 2rem;
+            text-align: center;
+            /*display: flex;
+            justify-content: space-between;*/
+            margin-top: 0.5rem;
+            position: fixed;
+            bottom: 0.5rem;
+            /*border: red solid 1px;*/
+        }
+
+        .btnStyle {
+            float: left;
+            width: 30%;
+            margin: 0 1.66%;
+            /*border: blue solid 1px;*/
+            background: linear-gradient(#9ed8f6, #007ac6);
+            color: white;
+            border-radius: 5px;
+        }
+        /*下面是模态框*/
+
+        #moddle_Order {
+            display: none;
+        }
+
+        .maskBox {
+            height: 62.9rem;
+            width: 100%;
+            background: #0a0a0a;
+            border: #0a0a0a solid 1px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.25;
+            /*z-index: 998;*/
+        }
+
+        .moddle_content {
+            width: 76%;
+            position: fixed;
+            top: 32%;
+            left: 12%;
+            height: 13rem;
+            background: white;
+            background-size: 100%;
+            background-repeat: no-repeat;
+            border-radius: 6px;
+            z-index: 999;
+            opacity: 1
+        }
+
+        .moddle_title {
+            width: 100%;
+            margin: 1rem 0 0.5rem 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #484848;
+            font-weight: 600;
+        }
+
+        .moddle_discrim {
+            width: 100%;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #484848;
+        }
+
+        #moddle_Order .aui-row {
+            width: 84%;
+            margin: 0.7rem 8%;
+        }
+
+        .aui-row .aui-title-blue {
+            width: 2rem;
+            text-align: center;
+            height: 1.9rem;
+            line-height: 1.9rem;
+            font-size: 0.8rem;
+            color: #007ac6
+        }
+
+        input[type='date'] {
+            border: #787878 solid 1px;
+            border-radius: 5px;
+            height: 1.9rem;
+            line-height: 1.9rem;
+            min-height: 1.9rem;
+            font-size: 0.7rem;
+            padding-left: 0.25rem;
+            width: 95%;
+            text-align: center;
+        }
+
+        .cancelBtn,
+        .ensureBtn {
+            float: left;
+            width: 50%;
+            text-align: center;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            color: #007ac6 !important;
+            height: 2.25rem;
+            line-height: 2.25rem;
+            min-height: 2.25rem;
+            border-top: #ddd solid 1px;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .cancelBtn {
+            border-radius: 0 0 0 0.25rem;
+            border-right: #ddd solid 1px;
+            left: 0;
+        }
+
+        .ensureBtn {
+            border-radius: 0 0 0.25rem 0;
+            border-top: #ddd solid 1px;
+            left: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topBox">
+        <div class="topBox_row">
+            <div class="row_left">
+                <span class="aui-iconfont aui-icon-left" onclick="turnBack()" tapmode></span>
+            </div>
+            <div class="row_center_text">电表详情</div>
+        </div>
+        <div class="topBox_row aui-row">
+            <div class="meter_imgBox"></div>
+        </div>
+        <div class="topBox_row aui-row">
+            <div id="meterNum">---</div>
+        </div>
+        <div class="topBox_row aui-row">
+            <div class="aui-col-xs-4" id="community" style="text-align:right">&nbsp;</div>
+            <div class="aui-col-xs-4" id="city">---</div>
+            <div class="aui-col-xs-1" style="text-align:left">
+                <div class="edit_imgBox" tapmode onclick="openEditPage()"></div>
+            </div>
+            <div class="aui-col-xs-1" style="text-align:left">
+                <div class="delete_imgBox" tapmode onclick="deleteMeter()"></div>
+            </div>
+        </div>
+        <div class="topBox_row aui-row">
+            <div class="aui-col-xs-4">
+                <div class="whiteText" id="meterStatus">---</div>
+                <div class="whiteTitle">通断状态</div>
+            </div>
+            <div class="aui-col-xs-4">
+                <div class="whiteText" id="meterType">---</div>
+                <div class="whiteTitle">电表类型</div>
+            </div>
+            <div class="aui-col-xs-4">
+                <div class="whiteText" id="onlineStatus">---</div>
+                <div class="whiteTitle">设备状态</div>
+            </div>
+        </div>
+    </div>
+    <div class="middleBox">
+        <table>
+            <tr>
+                <td>
+                    <div class="left_content">
+                        <div class="darkText" id="now_W">---</div>
+                        <div class="grayText">当前读数</div>
+                        <div class="grayText">（kWh）</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="center_content">
+                        <div class="darkText" id="today_W">---</div>
+                        <div class="grayText">今日用电</div>
+                        <div class="grayText">（kWh）</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="right_content">
+                        <div class="darkText" id="today_elecfee">---</div>
+                        <div class="grayText">今日电费</div>
+                        <div class="grayText">（元）</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="left_content">
+                        <div class="darkText" id="now_P">---</div>
+                        <div class="grayText">当前功率</div>
+                        <div class="grayText">（V）</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="center_content">
+                        <div class="darkText" id="now_A">---</div>
+                        <div class="grayText">当前电流</div>
+                        <div class="grayText">（A）</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="right_content">
+                        <div class="darkText" id="ele_price">---</div>
+                        <div class="grayText">电费单价</div>
+                        <div class="grayText">（元/kWh）</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="left_content">
+                        <div class="darkText" id="month_W">---</div>
+                        <div class="grayText">本月用电</div>
+                        <div class="grayText">（kWh）</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="center_content">
+                        <div class="darkText" id="month_elecfee">---</div>
+                        <div class="grayText">本月电费</div>
+                        <div class="grayText">（元）</div>
+                    </div>
+                </td>
+                <td rowspan="2" id="doubleRows">
+                    <div class="right_content">
+                        <div class="darkText">安全检测</div>
+                        <div class="darkText" style="margin-top:0.8rem;" id="fault_status">---</div>
+                        <div class="grayText">是否漏电</div>
+                        <div class="darkText" style="margin-top:0.8rem;" id="alarm_time1">未</div>
+                        <div class="darkText" id="alarm_time2">知</div>
+                        <div class="grayText">报警时间</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="left_content" style="padding-top:1.3rem">
+                        <div class="darkText" id="staircaseName">---</div>
+                        <div class="grayText">阶梯方案</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="center_content" style="padding-top:1.3rem">
+                        <div class="darkText" id="peakvalleyName">---</div>
+                        <div class="grayText">峰平谷方案</div>
+                    </div>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+    <div class="bottomRow  aui-row">
+        <div class="btnStyle aui-col-xs-4" id="btn1" tapmode onclick="operateModdle('block')">生成账单</div>
+        <div class="btnStyle aui-col-xs-4" id="btn2" tapmode>通电</div>
+        <!-- <div class="btnStyle aui-col-xs-4" id="btn3" tapmode onclick="deleteMeter()">删除设备</div> -->
+        <div class="btnStyle aui-col-xs-4" id="btn3" tapmode onclick="openDeepAnalysis()">深度分析</div>
+    </div>
+    <div id="moddle_Order">
+        <div class="maskBox"></div>
+        <div class="moddle_content">
+            <p class="moddle_title">生成账单</p>
+            <p class="moddle_discrim">请选择账单开始与结束日期</p>
+            <div class="aui-row">
+                <div class="aui-col-xs-2 aui-title-blue">从</div>
+                <div class="aui-col-xs-10">
+                    <input class="aui-pull-left aui-ellipsis-1" id="startTime" type="date" tapmode/>
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-2 aui-title-blue">到</div>
+                <div class="aui-col-xs-10">
+                    <input class="aui-pull-left aui-ellipsis-1" id="endTime" type="date" tapmode/>
+                </div>
+            </div>
+            <div class="aui-row moddle_btn_row">
+                <div class="cancelBtn" tapmode onclick="operateModdle('none')">取消</div>
+                <div class="ensureBtn" tapmode onclick="intoOrderPage()">确认</div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+
+<script type="text/javascript">
+    var toast
+    var meterId = ""
+    var location_name
+    var ele_price
+    var mid
+    apiready = function() {
+        api.parseTapmode()
+        toast = new auiToast();
+        meterId = api.pageParam.id //电表编号
+        console.log("电表id" + meterId);
+        getMeterMsg()
+        refreshLoading() //下拉刷新
+        api.addEventListener({
+            name: 'refreshPage'
+        }, function(ret, err) {
+            getMeterMsg()
+        });
+    };
+
+    // 获取电表信息
+    function getMeterMsg() {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '努力加载中...',
+            text: '先喝杯茶...',
+            modal: false
+        });
+        var url = HEADER + 'app/meter/check_getMeterDetailsById.do'
+        $.ajax({
+            type: 'get',
+            url: url,
+            data: {
+                "id": meterId
+            },
+            success: function(data) {
+                api.hideProgress();
+                // console.log(JSON.stringify(data));
+                if (data.code === 1 && data.data != null) {
+                    var json = data.data
+                    mid = (json.mid === null ? "---" : json.mid)
+                    $("#meterNum").html(mid) //电表编号
+
+                    var city = (json.city_name === null ? "---" : json.city_name)
+                    $("#city").html(city) //所在城市
+
+                    // console.log("location_name:" + json.location_name);
+                    // location_name = (json.location_name === null ? "---" : json.location_name)
+                    // $("#community").html(location_name) //小区名
+
+                    console.log("通断状态：" + json.e);
+                    var meterStatus = (json.e === null ? "---" : (json.e === 0 ? "断电" : (json.e === 1 ? "通电" : "---")))
+                    $("#meterStatus").html(meterStatus) //通断状态
+
+                    var meterType = (json.meter_type === null ? "---" : (json.meter_type === 1 ? "普通电表" : "---"))
+                    $("#meterType").html(meterType) //电表类型
+
+                    var onlineStatus = (json.online_status === null ? "---" : (json.online_status === 0 ? "离线" : (json.online_status === 1 ? "在线" : "---")))
+                    $("#onlineStatus").html(onlineStatus) //设备状态
+
+                    var now_W = (json.w === null ? 0 : json.w) //当前读数
+                    var initval = (json.initval === null ? 0 : json.initval) //电表初值
+                    $("#now_W").html(parseFloat(now_W) + parseFloat(initval)) //当前读数
+
+                    var today_W = (json.day_usew === null ? "---" : json.day_usew)
+                    $("#today_W").html(today_W) //今日用电
+
+                    var today_elecfee = (json.day_money === null ? "---" : json.day_money)
+                    $("#today_elecfee").html(today_elecfee) //今日电费
+
+                    var now_P = (json.power === null ? "---" : json.power)
+                    $("#now_P").html(now_P) //当前功率
+
+                    var now_A = (json.i === null ? "---" : json.i)
+                    $("#now_A").html(now_A) //当前电流
+
+                    ele_price = (json.ele_price === null ? "---" : json.ele_price)
+                    $("#ele_price").html(ele_price) //电费单价
+
+                    var month_usew = (json.month_usew === null ? "---" : json.month_usew)
+                    $("#month_W").html(month_usew) //本月用电
+
+                    var month_money = (json.month_money === null ? "---" : json.month_money)
+                    $("#month_elecfee").html(month_money) //本月电费
+
+                    var fault_status = (json.isleakage === null ? "---" : (json.isleakage === 0 ? "正常" : (json.isleakage === 1 ? "漏电" : "---")))
+                    $("#fault_status").html(fault_status) //是否漏电
+
+                    var fault_time = (json.fault_time === null ? "---" : ((json.fault_time).split(" ")))
+                    $("#alarm_time1").html(fault_time[0]) //报警时间1
+                    $("#alarm_time2").html(fault_time[1]) //报警时间2
+
+                    var staircaseName = (json.lp_name === null ? "---" : json.lp_name)
+                    console.log("阶梯方案名：" + staircaseName);
+                    $("#staircaseName").html(staircaseName) //阶梯方案
+
+                    var peakvalleyName = (json.lvp_name === null ? "---" : json.lvp_name)
+                    console.log("峰平谷方案名" + peakvalleyName);
+                    $("#peakvalleyName").html(peakvalleyName) //峰平谷方案
+
+
+                    /**** 下面是通断电 ****/
+                    var e = json.e
+                        // var e = 0;
+                        // console.log("通断电" + e);
+                    var el = $api.byId('btn2');
+                    if (e === 1) {//通电状态
+                        $("#btn2").html("断电")
+                        $api.addEvt(el, 'click', function() {
+                            cutOrLinkEle(0)
+                        });
+                    } else if (e === 0) {//断电状态
+                        $("#btn2").html("通电")
+                        $api.addEvt(el, 'click', function() {
+                            cutOrLinkEle(1)
+                        });
+                    }
+
+                    if (json.online_status === 1) {
+                        $("#btn2").css({
+                            "background": "linear-gradient(#9ed8f6, #007ac6)"
+                        }, {
+                            "color": "#fff"
+                        })
+                    } else if (json.online_status === 0) {
+                        $("#btn2").css({
+                            "background": "#b3b2b2"
+                        }, {
+                            "color": "#dcd8d8"
+                        })
+                        $api.rmEvt(el, 'click', function() {
+                            cutOrLinkEle(1)
+                            cutOrLinkEle(0)
+                        });
+                    }
+                }
+            },
+            eerror: function(err) {
+                api.hideProgress();
+                console.log(JSON.stringify(err));
+            }
+        })
+    }
+
+    // 设备通断电
+    function cutOrLinkEle(type) {
+        if (type === 1) {
+            var text = "通电"
+        } else if (type === 0) {
+            var text = "断电"
+        }
+        var url = HEADER + 'app/meter/update_controllerMeterPower.do'
+        api.confirm({
+            title: '提示信息',
+            msg: '确认要' + text + '？',
+            buttons: ['确定', '取消']
+        }, function(ret, err) {
+            if (ret.buttonIndex == 1) {
+                $.ajax({
+                    type: 'post',
+                    url: url,
+                    data: {
+                        "mid": meterId,
+                        "e": type
+                    },
+                    success: function(data) {
+                        // console.log(JSON.stringify(data));
+                        if (data.code === 1) {
+                            toast.success({
+                                title: "操作成功",
+                                duration: 2000
+                            })
+                            getMeterMsg()
+                        } else {
+                            toast.fail({
+                                title: data.msg,
+                                duration: 2000
+                            });
+                        }
+                    }
+                })
+            }
+        })
+    }
+
+    // 删除电表
+    function deleteMeter() {
+        var url = HEADER + 'app/meter/delete_deleteMeter.do'
+        api.confirm({
+            title: '提示信息',
+            msg: '确认删除该电表？',
+            buttons: ['确定', '取消']
+        }, function(ret, err) {
+            // console.log(JSON.stringify(ret));
+            if (ret.buttonIndex == 1) {
+                var url = HEADER + 'app/meter/delete_deleteMeter.do'
+                $.ajax({
+                    type: 'post',
+                    url: url,
+                    data: {
+                        "id": meterId
+                    },
+                    success: function(data) {
+                        // console.log(JSON.stringify(data));
+                        if (data.code == 1) {
+                            toast.success({
+                                title: "删除成功",
+                                duration: 2000
+                            });
+                            // 删除成功刷新列表页(showmoreList和mainpage以及meterLists)
+                            api.sendEvent({
+                                name: 'delMeterFromMeterDetail'
+                            });
+                            setTimeout(function() {
+                                api.closeWin();
+                            }, 1000)
+                        } else {
+                            toast.fail({
+                                title: data.msg,
+                                duration: 2000
+                            });
+                        }
+                    }
+                })
+            }
+        });
+    }
+
+    //显示时间选择
+    function chekTime() {
+        var startTime = $("#startTime").val()
+        var endTime = $("#endTime").val()
+        var id = api.pageParam.id;
+        var today = new Date().format("yyyy-MM-dd");
+        startTime = startTime.replace(new RegExp("-", "gm"), '/');
+        endTime = endTime.replace(new RegExp("-", "gm"), '/');
+        today = today.replace(new RegExp("-", "gm"), '/');
+        console.log(startTime + "---" + endTime + "---" + today);
+        if (startTime != "" && endTime != "") {
+            if (endTime > today) {
+                api.alert({
+                    title: "提示信息",
+                    msg: "结束时间不能大于当前时间!"
+                });
+                // $("#endTime").val(new Date().format("yyyy-MM-dd")); //结束时间为当前时间
+                $("#endTime").val('');
+                // $("#startTime").val("");
+                return 0;
+            }
+            if (endTime < startTime) {
+                api.alert({
+                    title: "提示信息",
+                    msg: "开始时间不能大于结束时间!"
+                });
+                $("#startTime").val('');
+                $("#endTime").val('');
+                return 0;
+            }
+            if (startTime > today) {
+                api.alert({
+                    title: "提示信息",
+                    msg: "开始时间不能大于当前时间!"
+                });
+                $("#startTime").val('');
+                $("#endTime").val('');
+                return 0;
+            }
+            var startD = new Date(startTime);
+            var endD = new Date(endTime);
+            var days = parseInt((endD.getTime() - startD.getTime()) / (1000 * 60 * 60 * 24));
+            if (days > 31) {
+                api.alert({
+                    title: "提示信息",
+                    msg: "日期范围应在一个月之内!"
+                });
+                $("#startTime").val('');
+                $("#endTime").val('');
+                return 0;
+            }
+        } else {
+            api.alert({
+                title: "提示信息",
+                msg: "请完善时间选择!"
+            });
+            $("#startTime").val('');
+            $("#endTime").val('');
+            return 0;
+        }
+        return 1;
+    }
+
+    // 进入账单页
+    function intoOrderPage() {
+        if (chekTime() === 1) {
+            var startT = $("#startTime").val()
+            var endT = $("#endTime").val()
+                // var startT = "2018-06-05"
+                // var endT = "2018-06-06"
+            console.log("进入账单页" + startT + "----" + endT + "-----" + meterId);
+            api.openWin({
+                name: 'showOrder',
+                url: './showOrder.html',
+                pageParam: {
+                    id: meterId,
+                    startT: startT,
+                    endT: endT
+                }
+            });
+        }
+    }
+
+    // 进入编辑页
+    function openEditPage() {
+        console.log("电表编号：" + mid);
+        api.openWin({
+            name: 'editMeter',
+            url: './editMeter.html',
+            pageParam: {
+                mid: mid,
+                meter_id: meterId
+            }
+        });
+    }
+
+    //打开深度分析页面
+    function openDeepAnalysis() {
+        // var type = api.pageParam.type;
+        // var style = api.pageParam.style;
+        // var meterId = api.pageParam.meterId; //设备编号
+        // var address = api.pageParam.address; //地址
+        // var feeset = api.pageParam.feeset; //电费单价
+        console.log("打开深度分析页：" + mid + "+" + meterId + "+" + ele_price);
+        api.openWin({
+            name: 'DeepAnalysis',
+            url: 'DeepAnalysis.html',
+            pageParam: {
+                // "type": type,
+                // "style": style,
+                // address: location_name,
+                mid: mid,
+                meterId: meterId,
+                feeset: ele_price
+            }
+        });
+    }
+
+    // 点击打开/关闭模态框
+    function operateModdle(type) {
+        $("#startTime").val("")
+        $("#endTime").val("")
+        $("#moddle_Order").css("display", type)
+        if (type == "block") {
+            var height = api.winHeight;
+            $(".maskBox").css("height", height)
+        }
+    }
+
+    //上拉刷新，下拉加载
+    function refreshLoading() {
+        //上拉刷新
+        api.setRefreshHeaderInfo({
+            visible: true,
+            loadingImg: 'widget://image/refresh.png',
+            bgColor: '#ccc',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function(ret, err) {
+            getMeterMsg()
+            api.refreshHeaderLoadDone(); //通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+        });
+    }
+</script>
+
+</html>

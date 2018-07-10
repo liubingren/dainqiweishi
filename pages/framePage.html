@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        html,
+        body {
+            height: 100%;
+            background: rgba(0, 0, 0, 0.0)
+        }
+
+        .moddle {
+            display: none
+        }
+
+        .aui-title-blue {
+            color: #007ac6;
+            text-align: right;
+            padding-right: 0.5rem;
+        }
+
+        .aui-title-blue span {
+            color: red
+        }
+        /*模态框*/
+
+        .maskBox {
+            height: 62.9rem;
+            width: 100%;
+            background: #0a0a0a;
+            border: #0a0a0a solid 1px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.25;
+            z-index: 66;
+        }
+
+        .moddle_content {
+            width: 76%;
+            position: fixed;
+            top: 35%;
+            left: 12%;
+            height: 8rem;
+            background: white;
+            background-size: 100%;
+            background-repeat: no-repeat;
+            border-radius: 6px;
+            z-index: 66;
+            opacity: 1
+        }
+
+        .moddle_title {
+            width: 100%;
+            text-align: center;
+            margin: 0.5rem auto;
+            font-size: 0.8rem;
+        }
+
+        `` .moddle .aui-row {
+            width: 84%;
+            margin: 0.7rem 8%;
+        }
+
+        .aui-row div {
+            height: 2rem;
+            line-height: 2rem;
+        }
+
+        .aui-row span {
+            color: red;
+        }
+
+        .aui-row select {
+            border: #484848 solid 1px;
+            height: 1.2rem;
+            line-height: 1.2rem;
+            min-height: 2rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+        }
+
+        .moddle input[type='text'] {
+            /*border: #007ac6 solid 1px;*/
+            border: #484848 solid 1px;
+            border-radius: 5px;
+            height: 1.2rem;
+            line-height: 1.2rem;
+            min-height: 2rem;
+            font-size: 0.7rem;
+            padding-left: 0.25rem;
+        }
+
+        .aui-searchbar-input {
+            top: -0.3rem;
+        }
+
+        .cancelBtn,
+        .ensureBtn {
+            float: left;
+            width: 50%;
+            text-align: center;
+            font-size: 0.8rem;
+            /*margin-top: 1rem;*/
+            color: #007ac6 !important;
+            height: 2.25rem;
+            line-height: 2.25rem;
+            min-height: 2.25rem;
+            border-top: #ddd solid 1px;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .cancelBtn {
+            border-radius: 0 0 0 0.25rem;
+            border-right: #ddd solid 1px;
+            left: 0;
+        }
+
+        .ensureBtn {
+            border-radius: 0 0 0.25rem 0;
+            border-top: #ddd solid 1px;
+            left: 50%;
+        }
+
+        .aui-title-blue {
+            color: #007ac6
+        }
+    </style>
+</head>
+
+<body>
+    <div class="moddle" id="moddle1">
+        <div class="maskBox"></div>
+        <div class="moddle_content">
+            <p class="moddle_title">新增分组</p>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>分组名称</div>
+                <div class="aui-col-xs-7">
+                    <input type="text" id="groupName_add" />
+                </div>
+            </div>
+            <div class="aui-row moddle_btn_row">
+                <div class="cancelBtn" tapmode onclick="closePage()">取消</div>
+                <div class="ensureBtn" tapmode onclick="submitAdd()">确认</div>
+            </div>
+        </div>
+    </div>
+    <div class="moddle" id="moddle2">
+        <div class="maskBox"></div>
+        <div class="moddle_content">
+            <p class="moddle_title">修改分组名称</p>
+            <div class="aui-row">
+                <div class="aui-col-xs-5 aui-title-blue"><span>*</span>新分组名称</div>
+                <div class="aui-col-xs-6">
+                    <input type="text" id="groupName_edit" />
+                </div>
+            </div>
+            <div class="aui-row moddle_btn_row">
+                <div class="cancelBtn" tapmode onclick="closePage()">取消</div>
+                <div class="ensureBtn" tapmode onclick="editgroupname()">确认</div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+
+<script type="text/javascript">
+    var group_id
+    var name
+    var type
+    var toast
+    apiready = function() {
+        toast = new auiToast();
+        type = api.pageParam.type
+        name = api.pageParam.name
+        group_id = api.pageParam.group_id
+            // console.log("framePage:" + type + " ++ " + name + " ++ " + id);
+        $("#moddle" + type).css("display", "block")
+        $("#groupName_edit").val(name)
+    };
+
+    // 提交新增分组
+    function submitAdd() {
+        var group_name = $("#groupName_add").val()
+        console.log("新增" + group_name);
+        var url = HEADER + 'app/meterGroup/add_addMeterGroup.do'
+        $.ajax({
+            type: 'post',
+            url: url,
+            data: {
+                "group_name": group_name
+            },
+            success: function(data) {
+                console.log(JSON.stringify(data));
+                $(".moddle").css("display", "none")
+                if (data.code === 1) {
+                    alert("添加成功")
+                    // toast.success({
+                    //     title: "添加成功！",
+                    //     duration: 2000
+                    // })
+                    api.sendEvent({
+                        name: 'getGroupMsg'
+                    });
+                } else {
+                    alert(data.msg)
+                    // toast.fail({
+                    //     title: data.msg,
+                    //     duration: 2000
+                    // });
+                }
+                closePage()
+            },
+            error: function(err) {
+                alert("请求失败，请检查网络！")
+            }
+        })
+    }
+
+    // 修改分组名
+    function editgroupname() {
+        var group_name = $("#groupName_edit").val()
+        console.log("编辑" + group_name + "   +    " + group_id);
+        var url = HEADER + 'app/meterGroup/update_updateMeterGroup.do'
+        $.ajax({
+            type: 'post',
+            url: url,
+            data: {
+                "id": group_id,
+                "group_name": group_name
+            },
+            success: function(data) {
+                console.log(JSON.stringify(data));
+                $(".moddle").css("display", "none")
+                if (data.code === 1) {
+                    // toast.success({
+                    //     title: "修改成功！",
+                    //     duration: 2000
+                    // })
+                    alert("修改成功")
+                    api.sendEvent({
+                        name: 'getGroupMsg'
+                    });
+
+                } else {
+                    // toast.fail({
+                    //     title: data.msg,
+                    //     duration: 2000
+                    // });
+                    alert(data.msg)
+                }
+                closePage()
+            },
+            error: function(err) {
+                alert("请求失败，请检查网络！")
+            }
+        })
+    }
+
+    //关闭页面
+    function closePage() {
+        api.closeFrame();
+    }
+</script>
+
+</html>

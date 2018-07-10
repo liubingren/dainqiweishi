@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no">
+    <title>设置</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+
+    <style>
+        .topBGbox {
+            width: 100%;
+            height: 10rem;
+            background: url('../image/setting/set_bg.png');
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+        .headRound {
+            width: 100%;
+            text-align: center;
+            padding-top: 2.8rem;
+        }
+
+        .headRound img {
+            width: 4rem;
+            height: 4rem;
+            /*margin:5rem auto;*/
+            background: url('../image/setting/icon_user.png');
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+        .loginBtn {
+            background: linear-gradient(#9ed8f6, #007ac6);
+            height: 1.8rem;
+            line-height: 1.8rem;
+            width: 28%;
+            margin-left: 36%;
+            text-align: center;
+            border-radius: 0.3rem;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .msgBox {
+            text-align: center;
+            width: 100%;
+            font-size: 0.6rem;
+        }
+
+        .msgBox p:first-of-type {
+            font-size: 0.8rem;
+            font-weight: 900;
+        }
+        /*下面是列表*/
+
+        #lists {
+            background-color: #ffffff;
+            padding-top: 0.3rem;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+
+        .aui-list-item .aui-list-item-inner {
+            height: 2.2rem;
+            line-height: 2.2rem;
+            display: inline-block;
+        }
+
+        .aui-list-item.quitLogin .aui-list-item-inner {
+            text-align: center;
+            color: #a1a1a1;
+        }
+
+        .aui-list-item:nth-of-type(1) .aui-list-item-inner{
+            text-indent: 2rem;
+            background: url(../image/setting/li_01.png) no-repeat left center;
+            background-size: 7%;
+            font-size: 0.7rem
+        }
+
+        .aui-list-item:nth-of-type(2) .aui-list-item-inner {
+            text-indent: 2rem;
+            background: url(../image/setting/li_03.png) no-repeat left center;
+            font-size: 0.7rem;
+            background-size: 7%;
+        }
+
+        .aui-list-item:nth-of-type(3) .aui-list-item-inner {
+            text-indent: 2rem;
+            background: url(../image/setting/li_02.png) no-repeat left center;
+            font-size: 0.7rem;
+            background-size: 7%;
+        }
+
+        .aui-list-item:nth-of-type(4) .aui-list-item-inner{
+            text-indent: 2rem;
+            background: url(../image/setting/li_04.png) no-repeat left center;
+            font-size: 0.7rem;
+            background-size: 7%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topBGbox">
+        <div class="headRound">
+            <img src="../image/setting/icon_user.png" />
+        </div>
+        <!-- <div class="loginBtn" tapmode onclick="intoLogin()">立即登录</div> -->
+        <div class="msgBox">
+            <p id="username">请登录</p>
+            <!-- <p id="number">0012844643</p> -->
+            <!-- <p id="community">梅州大厦</p> -->
+        </div>
+    </div>
+    <div class="list">
+        <ul class="aui-list aui-list-in" id="lists">
+            <li class="aui-list-item" tapmode onclick="goPersonalset();">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    个人设置
+                </div>
+            </li>
+            <li class="aui-list-item" tapmode onclick="goMyranking();">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    我的排名
+                </div>
+            </li>
+            <li class="aui-list-item" tapmode onclick="goStaircaseScheme();">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    阶梯方案设置
+                </div>
+            </li>
+            <li class="aui-list-item" tapmode onclick="goPeakvalleyscheme();">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    峰平谷方案设计
+                </div>
+            </li>
+            <li class="aui-list-item quitLogin" onclick="quitLogin();">
+                <div class="aui-list-item-inner">
+                    退出登录
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<!-- <script type="text/javascript" src="../script/aui-tab.js"></script> -->
+
+<script type="text/javascript">
+    apiready = function() {
+        var userInfo = $api.getStorage("userInfo")
+        console.log(typeof(userInfo));
+        $("#username").html(userInfo.username)
+        api.addEventListener({
+            name: 'isLogined'
+        }, function(ret, err){
+            var userInfo = $api.getStorage("userInfo")
+            console.log(typeof(userInfo));
+            $("#username").html(userInfo.username)
+        });
+        api.addEventListener({
+            name: 'quitLogin'
+        }, function(ret, err){
+            quitLogin()
+        });
+    };
+
+    // 个人设置
+    function goPersonalset() {
+        api.openWin({
+            name: 'personalMsg',
+            url: './personalMsg.html'
+        })
+    }
+
+    // 我的排名
+    function goMyranking() {
+        api.openWin({
+            name: 'selectRankGroup',
+            url: './selectRankGroup.html'
+        })
+    }
+
+    // 阶梯方案
+    function goStaircaseScheme() {
+        api.openWin({
+            name: 'staircaseScheme_List',
+            url: './staircaseScheme_List.html'
+        })
+    }
+
+
+    // 峰平谷方案
+    function goPeakvalleyscheme() {
+        api.openWin({
+            name: 'peakvalleyScheme',
+            url: './peakvalleyScheme_List.html'
+        })
+    }
+
+    function quitLogin() {
+        var ajpush = api.require('ajpush');
+        var param = {
+            alias: '',
+            tags: []
+        };
+        console.log("param" + JSON.stringify(param));
+        ajpush.bindAliasAndTags(param, function(ret) {
+            var statusCode = ret.statusCode;
+            console.log("绑定返回值" + statusCode);
+        });
+        $api.rmStorage("userInfo");
+        api.openWin({
+            name: 'login',
+            url: './login.html'
+        })
+    }
+</script>
+
+</html>

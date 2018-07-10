@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>阶梯方案列表</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+
+    <style>
+        body {
+            background: white
+        }
+
+        p {
+            heigth: 1.3rem;
+            line-height: 1.3rem;
+            padding-top: 0.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: #484848;
+        }
+
+        .blue_line {
+            width: 4%;
+            margin-left: 48%;
+            height: 2px;
+            background: #007ac6;
+        }
+
+        .li_line {
+            height: 2.2rem;
+            line-height: 2.2rem;
+            font-size: 0.7rem;
+            border-bottom: #eee solid 1px;
+        }
+
+        .li_line:first-of-type {
+            margin-top: 0.7rem;
+            border-top: #eee solid 1px
+        }
+
+        .leftdiv {
+            padding-left: 1rem;
+            color: #484848;
+            font-size: 0.7rem;
+        }
+
+        .leftdiv i {
+            color: #1f8ace;
+            font-size: 0.85rem;
+            margin-left: 0.8rem
+        }
+
+        .rightdiv {
+            color: #d3d3d3;
+            font-size: 0.6rem;
+            margin-right: 0.2rem
+        }
+
+        .rightdiv i {
+            margin-left: 0.2rem;
+        }
+
+        #moddle {
+            display: none;
+        }
+
+        .maskBox {
+            height: 62.9rem;
+            width: 100%;
+            background: #0a0a0a;
+            border: #0a0a0a solid 1px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.25;
+            /*z-index: 998;*/
+        }
+
+        .moddle_content {
+            width: 76%;
+            position: fixed;
+            top: 32%;
+            left: 12%;
+            height: 10.5rem;
+            background: white;
+            background-size: 100%;
+            background-repeat: no-repeat;
+            border-radius: 6px;
+            z-index: 999;
+            opacity: 1
+        }
+
+        .moddle_title {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        #moddle .aui-row {
+            width: 84%;
+            margin: 0.7rem 8%;
+        }
+
+        .aui-row div {
+            height: 2rem;
+            line-height: 2rem;
+        }
+
+        .aui-row span {
+            color: red;
+        }
+
+        .aui-row select {
+            border: #484848 solid 1px;
+            height: 1.2rem;
+            line-height: 1.2rem;
+            min-height: 2rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+        }
+
+        #moddle input[type='text'] {
+            /*border: #007ac6 solid 1px;*/
+            border: #484848 solid 1px;
+            border-radius: 5px;
+            height: 1.2rem;
+            line-height: 1.2rem;
+            min-height: 2rem;
+            font-size: 0.7rem;
+            padding-left: 0.25rem;
+        }
+
+        .aui-searchbar-input {
+            top: -0.3rem;
+        }
+
+        #province {
+            width: 110%;
+            /*margin-right: 5%;*/
+            padding: 0 0.9rem 0 0.25rem;
+            /*overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;*/
+        }
+
+        #city {
+            width: 90%;
+            margin-left: 10%;
+            padding: 0 1.15rem 0 0.25rem;
+            overflow: hidden;
+            /*text-overflow: ellipsis;
+            white-space: nowrap;*/
+        }
+
+        #province+.icon_down {
+            float: left;
+            position: relative;
+            top: -2rem;
+            left: 82%;
+            color: black;
+            font-size: 0.7rem;
+            background: url('../image/meters/icon_down.png') no-repeat;
+            background-size: 90%;
+            background-position: 0 0.75rem;
+            /*border: red solid 1px;*/
+            width: 0.8rem;
+            opacity: 0.9;
+        }
+
+        #city+.icon_down {
+            float: left;
+            position: relative;
+            top: -2rem;
+            left: 82%;
+            color: black;
+            font-size: 0.7rem;
+            background: url('../image/meters/icon_down.png') no-repeat;
+            background-size: 90%;
+            background-position: 0 0.75rem;
+            /*border: red solid 1px;*/
+            width: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .cancelBtn,
+        .ensureBtn {
+            float: left;
+            width: 50%;
+            text-align: center;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            color: #007ac6 !important;
+            height: 2.25rem;
+            line-height: 2.25rem;
+            min-height: 2.25rem;
+            border-top: #ddd solid 1px;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .cancelBtn {
+            border-radius: 0 0 0 0.25rem;
+            border-right: #ddd solid 1px;
+            left: 0;
+        }
+
+        .ensureBtn {
+            border-radius: 0 0 0.25rem 0;
+            border-top: #ddd solid 1px;
+            left: 50%;
+        }
+
+        .aui-title-blue {
+            color: #007ac6
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav">
+        <div class="aui-pull-left aui-btn" onclick="turnBack()" tapmode>
+            <span class="aui-iconfont aui-icon-left"></span>
+        </div>
+        <div class="aui-title">阶梯方案列表</div>
+        <div class="aui-pull-right aui-btn" onclick="operateModdle('block')" tapmode>
+            <span>新增</span>
+        </div>
+    </header>
+    <div class="aui-content">
+        <div class="aui-searchbar-wrap" id="search" style="clear:left;">
+            <div class="aui-searchbar aui-border-radius" tapmode onclick="doSearch(this);" style="width:95%;border-radius:15px">
+                <i class="aui-iconfont aui-icon-search"></i>
+                <div class="aui-searchbar-text">
+                    请输入搜索内容
+                </div>
+                <div class="aui-searchbar-input">
+                    <input type="text" placeholder="请输入方案名称" id="search-input">
+                </div>
+                <i class="aui-iconfont aui-icon-close" tapmode onclick="clearInput()"></i>
+            </div>
+            <div class="aui-searchbar-cancel" tapmode onclick="cancelSearch()" style="color:#888">取消</div>
+            <div class="aui-searchbar-cancel" tapmode onclick="getMsg(this);" style="color:#888">确定</div>
+        </div>
+        <p>方案名称</p>
+        <div class="blue_line"> </div>
+        <ul id="list">
+            <!-- <li class="aui-row li_line">
+                <div class="aui-pull-left leftdiv">
+                    <div>广州阶梯方案<i class="aui-iconfont aui-icon-trash" tapmode onclick="deleteScheme(this)"></i></div>
+                </div>
+                <div class="aui-pull-right rightdiv" tapmode onclick="intoDetail(this)">
+                    <div>设置<i class="aui-iconfont aui-icon-right"></i></div>
+                </div>
+            </li>
+            <li class="aui-row li_line">
+                <div class="aui-pull-left  leftdiv">
+                    <div>广州阶梯方案<i class="aui-iconfont aui-icon-trash" tapmode onclick="deleteScheme(this)"></i></div>
+                </div>
+                <div class="aui-pull-right rightdiv" tapmode onclick="intoDetail(this)">
+                    <div>设置<i class="aui-iconfont aui-icon-right"></i></div>
+                </div>
+            </li> -->
+        </ul>
+        <div class="aui-card-list-footer aui-text-center" tapmode onclick="showMore()">
+            暂无更多
+        </div>
+        <div id="moddle">
+            <div class="maskBox"></div>
+            <div class="moddle_content">
+                <p class="moddle_title">新增阶梯方案</p>
+                <div class="aui-row">
+                    <div class="aui-col-xs-4 aui-title-blue"><span>*</span>方案名称</div>
+                    <div class="aui-col-xs-8">
+                        <input type="text" id="schemeName" />
+                    </div>
+                </div>
+                <div class="aui-row">
+                    <div class="aui-col-xs-4 aui-title-blue"><span>*</span>选择城市</div>
+                    <div class="aui-col-xs-3">
+                        <select id="province" onchange="cityonchange(this)">
+
+                        </select>
+                        <div class="icon_down"> </div>
+                    </div>
+                    <div class="aui-col-xs-5">
+                        <select id="city">
+
+                        </select>
+                        <div class="icon_down"> </div>
+                    </div>
+                </div>
+                <div class="aui-row moddle_btn_row">
+                    <div class="cancelBtn" tapmode onclick="operateModdle('none')">取消</div>
+                    <div class="ensureBtn" tapmode onclick="ensureAdd()">确认</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/city.js"></script>
+<script type="text/javascript" src="../script/aui-dialog.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+
+<script type="text/javascript">
+    var param = "";
+    var listPage = 1;
+    var pageTotal = 0;
+    var toast
+    apiready = function() {
+        api.parseTapmode()
+        toast = new auiToast();
+        getSchemeList("")
+    };
+
+    // 获取方案列表
+    function getSchemeList() {
+        var url = HEADER + 'app/ladderPrice/check_getLadderPriceProgramListByPage.do'
+        console.log(listPage + "+" + param);
+        $.ajax({
+            type: 'get',
+            url: url,
+            data: {
+                "page": listPage,
+                "pageSize": 10,
+                "name": param
+            },
+            success: function(data) {
+                // console.log(JSON.stringify(data));
+                if (data.code == "1" || data.code == 1) {
+                    pageTotal = data.data.totalPage
+                    var jsonArr = data.data.list;
+                    var html = ""
+                    for (var i = 0; i < jsonArr.length; i++) {
+                        html += '<li class="aui-row li_line">' +
+                            '       <div class="aui-pull-left leftdiv">' +
+                            '           <div>' + jsonArr[i].name + '<i class="aui-iconfont aui-icon-trash" data-id="' + jsonArr[i].id + '" tapmode onclick="deleteScheme(this)"></i></div>' +
+                            '       </div>' +
+                            '       <div class="aui-pull-right rightdiv" data-id="' + jsonArr[i].id + '" data-city="' + jsonArr[i].location_name + '" data-name="' + jsonArr[i].name + '" tapmode onclick="intoDetail(this)">' +
+                            '           <div>设置<i class="aui-iconfont aui-icon-right"></i></div>' +
+                            '       </div>' +
+                            '   </li>'
+                    }
+                    if (listPage < pageTotal) {
+                        $(".aui-card-list-footer").html('查看更多')
+                    } else {
+                        $(".aui-card-list-footer").html('暂无更多')
+                    }
+                    $("#list").append(html)
+                    api.parseTapmode();
+                    refreshLoading(); //上拉刷新，下拉加载
+                }
+            }
+        })
+    }
+
+    // 加载更多
+    function showMore() {
+        console.log("listPage" + listPage);
+        if (listPage < pageTotal) {
+            listPage++
+            console.log("listPage" + listPage);
+            getSchemeList(param)
+        } else {
+            $(".aui-card-list-footer").html('暂无更多')
+        }
+    }
+
+    // 新增方案
+    function ensureAdd() {
+        var name = $("#schemeName").val()
+        var p_id = $("#province").val()
+        var c_id = $("#city").val()
+        console.log(name + "+" + p_id + "+" + c_id);
+        if (name) {
+            $.ajax({
+                type: 'post',
+                url: HEADER + 'app/ladderPrice/add_addLadderPriceProgram.do',
+                data: {
+                    "name": name,
+                    "province_id": p_id,
+                    "city_id": c_id
+                },
+                success: function(data) {
+                    console.log(JSON.stringify(data));
+                    if (data.code == 1) {
+                        toast.success({
+                            title: "新增成功",
+                            duration: 2000
+                        });
+                        cancelSearch()
+                        operateModdle('none')
+                    } else {
+                        alert(data.msg)
+                    }
+                }
+            })
+        } else {
+            alert("方案名不能为空！")
+        }
+    }
+
+
+    // 删除方案
+    function deleteScheme(dom) {
+        var id = $(dom).attr("data-id")
+        var dialog = new auiDialog({})
+        console.log("方案：" + id);
+        dialog.alert({
+            title: "提示信息",
+            msg: '确认删除该方案？',
+            buttons: ['取消', '确定']
+        }, function(ret) {
+            if (ret.buttonIndex == 2) {
+                $.ajax({
+                    type: 'post',
+                    url: HEADER + 'app/ladderPrice/delete_deleteLadderPriceProgram.do',
+                    data: {
+                        "id": id
+                    },
+                    success: function(data) {
+                        // console.log(JSON.stringify(data));
+                        listPage = 1;
+                        $("#list").html("");
+                        getSchemeList() //刷新列表
+                        if (data.code == 1) {
+                            toast.success({
+                                title: "删除成功",
+                                duration: 2000
+                            })
+                        } else {
+                            toast.fail({
+                                title: data.msg,
+                                duration: 2000
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    }
+
+    // 进入方案详情页
+    function intoDetail(dom) {
+        var id = $(dom).attr("data-id")
+        var city_name = $(dom).attr("data-city")
+        var name = $(dom).attr("data-name")
+        console.log("进入方案详情页" + city_name);
+        api.openWin({
+            name: 'staircaseScheme_Detail',
+            url: './staircaseScheme_Detail.html',
+            pageParam: {
+                id: id,
+                city_name: city_name,
+                name: name
+            }
+        });
+    }
+
+
+    // 点击打开/关闭模态框
+    function operateModdle(type) {
+        $("#moddle").css("display", type)
+        if (type == "block") {
+            var height1 = $("html").css("height");
+            var height2 = api.winHeight;
+            if (parseInt(height1) > parseInt(height2)) {
+                $(".maskBox").css("height", parseInt(height1) + 45)
+            } else {
+                $(".maskBox").css("height", height2)
+            }
+            $("#schemeName").val("")
+            showProvinceCity()
+        }
+    }
+
+
+    //上拉刷新，下拉加载
+    function refreshLoading() {
+        //上拉刷新
+        api.setRefreshHeaderInfo({
+            visible: true,
+            loadingImg: 'widget://image/refresh.png',
+            bgColor: '#ccc',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function(ret, err) {
+            listPage = 1;
+            pageTotal = 0;
+            cancelSearch()
+            $("#list").html("");
+            getSchemeList(""); //重新加载第一页内容
+            api.refreshHeaderLoadDone(); //通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+        });
+    }
+
+    /*****************   搜   索    功    能    ******************/
+
+    //搜索条函数
+    function doSearch() {
+        $api.addCls($api.dom(".aui-searchbar-wrap"), "focus");
+        $api.dom('.aui-searchbar-input input').focus();
+    }
+
+    //取消搜索
+    function cancelSearch() {
+        $api.removeCls($api.dom(".aui-searchbar-wrap.focus"), "focus");
+        $api.val($api.byId("search-input"), '');
+        $api.dom('.aui-searchbar-input input').blur();
+        param = ""
+        $("#list").html("");
+        listPage = 1
+        getSchemeList("");
+    }
+
+    //清空搜索内容
+    function clearInput() {
+        $api.val($api.byId("search-input"), '');
+    }
+
+    //搜索的内容
+    function getMsg(dom) {
+        $api.dom('.aui-searchbar-input input').blur();
+        param = $("#search-input").val(); //小区名称
+        $("#list").html("");
+        console.log(param)
+        listPage = 1
+        getSchemeList(param);
+    };
+</script>
+
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>title</title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+	<style>
+		body {
+			position: fixed;
+			top: 0px;
+			left: 0px;
+			background-color: #FFFFFF;
+		}
+
+		.bodyBox {
+			height: 100%;
+			background: #ffffff;
+			font-family: "微软雅黑";
+			padding-bottom: 5.1rem;
+		}
+
+		.logoBox {
+			width: 100%;
+			padding-top: 1.5rem;
+			height: 12.5rem;
+			background: #FFFFFF;
+			text-align: center;
+			color: #ffffff;
+		}
+
+		.logoBox h1 {
+			margin-bottom: 0.5rem;
+			color: #007ac6;
+		}
+
+		.logoBox img {
+			width: 6rem;
+			display: inline-block;
+		}
+
+		.loginBox {
+			width: 74%;
+			margin-left: 11%;
+		}
+
+		.aui-list .aui-list-item:first-child {
+			margin-top: 0.5rem;
+		}
+
+		p {
+			width: 100%;
+			height: 2.5rem;
+			line-height: 50px;
+			text-align: center;
+			color: white;
+			font-size: 18px;
+		}
+
+		#loginBtn {
+			height: 2.25rem;
+			line-height: 2.25rem;
+			width: 78%;
+			margin: 0.6rem auto;
+			background: linear-gradient(#9ed8f6, #007ac6);
+			border-radius: 0.5rem;
+			color: #fff;
+			font-size: 16px;
+			letter-spacing: 1px;
+			text-align: center;
+		}
+
+		footer {
+			text-align: center;
+			color: #007ac6;
+		}
+
+		footer span:first-child {
+			color: #9ed8f6;
+		}
+
+		#register {
+			/*width：50%;*/
+			font-size: 14px;
+			text-align: center;
+			margin-top: 0.4rem;
+			color: #888;
+		}
+
+		.aui-col-xs-12 {
+			font-size: 0.5rem;
+		}
+
+		.aui-col-xs-6 span {
+			color: #9ed8f6;
+		}
+
+		.aui-list-item .aui-list-item-inner {
+			margin-bottom: 0.5rem !important;
+			border-bottom: #2e59bd solid 1px !important;
+		}
+
+		.aui-list .aui-list-item-label-icon {
+			width: 2.2rem !important;
+			height: 2.2rem !important;
+			margin-right: 0.3rem !important;
+		}
+
+		.aui-list .aui-list-item i.aui-iconfont {
+			color: #1473b5;
+			font-size: 1.2rem;
+			font-weight: bold;
+		}
+
+		.aui-list.aui-form-list li:last-child {
+			margin-bottom: 0.5rem;
+			text-align: center;
+		}
+
+		.aui-list .aui-list-item {
+			padding: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="bodyBox">
+		<div class="logoBox">
+			<h1>用户注册</h1>
+			<img src="../image/logo2.png">
+		</div>
+		<div class="loginBox">
+			<ul class="aui-list aui-form-list">
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-label-icon iconbox-username">
+							<i class="aui-iconfont aui-icon-mobile"></i>
+						</div>
+						<div class="aui-list-item-input">
+							<input type="text" name="username" id="username" value="" placeholder="请输入手机号码" />
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-label-icon iconbox-username">
+							<i class="aui-iconfont aui-icon-mail"></i>
+						</div>
+						<div class="aui-list-item-input">
+							<input type="text" name="mail" id="mail" value="" placeholder="请输入邮箱" />
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-label-icon iconbox-password">
+							<i class="aui-iconfont aui-icon-lock"></i>
+						</div>
+						<div class="aui-list-item-input">
+							<input type="password" name="password" id="password" value="" placeholder="请输入密码" />
+						</div>
+					</div>
+				</li>
+				<li class="aui-list-item">
+					<div class="aui-list-item-inner">
+						<div class="aui-list-item-label-icon iconbox-username">
+							<i class="aui-iconfont aui-icon-lock"></i>
+						</div>
+						<div class="aui-list-item-input">
+							<input type="password" name="resetPassword" id="resetPassword" value="" placeholder="请再次确认密码" />
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="aui-col-xs-12">
+						请输入至少由8个数字、字母或符号(如！、&等)组成的密码
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div id="loginBtn" onclick="register()" tapmode class="login">注册</div>
+		<footer><span>已有账号?</span><span onclick="openLogin();" tapmode>马上登陆</span></footer>
+	</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+<script type="text/javascript">
+	apiready = function() {
+		api.closeWin({
+			name: 'login',
+			url: "login.html"
+		});
+		//禁止用户在没有登录的情况下查看菜单
+		api.addEventListener({
+			name: 'swiperight'
+		}, function(ret, err) {
+			api.openWin({
+				name: 'login',
+				url: 'login.html'
+			});
+			api.closeWin({});
+		});
+		api.addEventListener({
+			name: 'keyback'
+		}, function(ret, err) {
+			api.openWin({
+				name: 'login',
+				url: 'login.html'
+			});
+			api.closeWin({});
+		});
+	};
+
+	function register() {
+		var url = HEADER + "app/user/add_registeredUser.do";
+
+		var username = $("#username").val().trim();
+		var mail = $("#mail").val().trim();
+		var password = $("#password").val().trim();
+		var resetPassword = $("#resetPassword").val().trim();
+
+		if (username == '') {
+			alert("请输入手机号码!");
+			return false;
+		}
+		if (mail == '') {
+			alert("请输入邮箱!");
+			return false;
+		}
+		if (password == '') {
+			alert("请输入密码!");
+			return false;
+		}
+		if (resetPassword == '') {
+			alert("请再次确认密码!");
+			return false;
+		}
+
+		var reg = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/
+		if (!reg.test(mail)) {
+			alert('邮箱格式不正确!');
+			return false;
+		}
+
+		if (password == resetPassword) {
+			$.ajax({
+				type: "post",
+				url: url,
+				data: {
+					phonenumber: username,
+					password: password,
+					email: mail
+				},
+				success: function(data) {
+					if (data.code == 1 || data.code == "1") {
+						showDefault(1, "注册成功！");
+						api.openWin({
+							name: 'login',
+							url: 'login.html'
+						});
+						api.closeWin({
+							name: "regist"
+						});
+					} else {
+						showDefault(2, data.msg);
+					}
+				}
+			});
+		} else {
+			alert("确认密码和设置密码要相同!");
+		}
+
+	};
+
+	function openLogin() {
+		api.openWin({
+			name: 'login',
+			url: "login.html"
+		});
+		api.closeWin();
+	};
+
+	var toast = new auiToast({})
+
+	function showDefault(type, title) {
+		switch (type) {
+			case 1:
+				toast.success({
+					title: title || "提交成功",
+					duration: 2000
+				});
+				break;
+			case "loading":
+				toast.loading({
+					title: "加载中",
+					duration: 2000
+				}, function(ret) {
+					console.log(ret);
+					setTimeout(function() {
+						toast.hide();
+					}, 3000)
+				});
+				break;
+			default:
+				toast.fail({
+					title: title || "提交失败",
+					duration: 2000
+				});
+				break;
+		}
+	}
+</script>
+
+</html>

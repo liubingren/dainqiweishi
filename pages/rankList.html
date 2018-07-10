@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>排行榜</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+
+    <style>
+        html {
+            background: white
+        }
+
+        body {
+            color: #484848;
+            fontFamily: "SimHei";
+        }
+
+        .topBox {
+            /*border: blue solid 1px;*/
+            /*background: linear-gradient(#9ed8f6, #007ac6);*/
+            width: 100%;
+            height: 11.5rem;
+            background: url('../image/setting/rankBg.png') no-repeat;
+            background-size: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 99;
+        }
+
+        .topBox_row {
+            width: 100%;
+            color: white;
+            text-align: center;
+        }
+
+        .topBox_row:first-of-type {
+            padding-top: 1.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .topBox_row:nth-of-type(2) {
+            /*border: red solid 1px;*/
+            padding: 0.3rem 0;
+        }
+
+        .topBox_row:nth-of-type(3) {
+            /*border: red solid 1px;*/
+            height: 1rem;
+            line-height: 1rem;
+            fontSize: 0.8rem;
+            color: #e7c420;
+        }
+
+        .topBox_row:nth-of-type(4) {
+            /*border: white solid 1px;*/
+            padding-top: 0.3rem;
+            font-size: 0.6rem;
+            padding-bottom: 2rem;
+        }
+
+        .topBox_row:nth-of-type(2) .aui-col-xs-4 {
+            font-size: 0.7rem;
+        }
+
+        .row_left {
+            width: 10%;
+            padding-left: 2%;
+            float: left;
+        }
+
+        .row_center_text {
+            width: 80%;
+            /*margin:0 20% ;*/
+            float: left;
+            text-align: center;
+        }
+
+        .left_label {
+            border-radius: 0 0.6rem 0.6rem 0;
+            background: #e74f20;
+            height: 1.3rem;
+            line-height: 1.3rem;
+            width: 90%;
+            position: relative;
+            top: 1.7rem;
+        }
+
+        .meter_imgBox {
+            /*border: blue solid 1px;*/
+            width: 3.1rem;
+            height: 4rem;
+            margin: 0 auto;
+            background: url('../image/meters/champion.png') no-repeat;
+            background-size: 100%;
+            background-position: center;
+        }
+
+        .right_label {
+            border-radius: 0.6rem 0 0 0.6rem;
+            background: #e74f20;
+            height: 1.3rem;
+            line-height: 1.3rem;
+            width: 90%;
+            float: right;
+            position: relative;
+            top: 1.7rem;
+        }
+
+        .whiteTitle {
+            color: #fff;
+            font-size: 0.6rem;
+            /*border: red solid 1px;*/
+        }
+
+        .grayTitle {
+            color: #787878;
+            font-size: 0.6rem;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .middleBox {
+            /*border: red solid 1px;*/
+            margin-top: 11.5rem;
+            z-index: 1;
+        }
+
+        .icon1,
+        .icon2,
+        .icon3,
+        .iocn4,
+        .icon5,
+        .iocn6 {
+            background-position: center;
+            /*border: red solid 1px;*/
+            width: 0.7rem;
+            height: 0.7rem;
+            margin-right: 0.25rem;
+            position: relative;
+            top: 0.1rem;
+        }
+
+        .icon1 {
+            background: url('../image/meters/icon_location_white.png') no-repeat;
+            background-size: 100%;
+            /*left: 0;*/
+        }
+
+        .icon2 {
+            background: url('../image/meters/icon_meterName_white.png') no-repeat;
+            background-size: 100%;
+        }
+
+        .icon3 {
+            background: url('../image/meters/icon_eleuse_white.png') no-repeat;
+            background-size: 100%;
+        }
+
+        .icon4 {
+            background: url('../image/meters/icon_location_gray.png') no-repeat;
+            background-size: 100%;
+            width: 0.7rem;
+            height: 0.7rem;
+            position: relative;
+            top: 0.1rem;
+            margin-right: 0.25rem;
+        }
+
+        .icon5 {
+            background: url('../image/meters/icon_meterName_gray.png') no-repeat;
+            background-size: 100%;
+        }
+
+        .icon6 {
+            background: url('../image/meters/icon_eleuse_gray.png') no-repeat;
+            background-size: 100%;
+            width: 0.7rem;
+            height: 0.7rem;
+            position: relative;
+            top: 0.1rem;
+            margin-right: 0.25rem;
+        }
+
+        .left_box_yellow {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #e7c420;
+            height: 3rem;
+            line-height: 3rem
+        }
+
+        .left_box_gray {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #a1a1a1;
+            height: 3rem;
+            line-height: 3rem
+        }
+
+        .right_box {
+            /*border: black solid 1px;*/
+            margin-top: 0.5rem
+        }
+
+        .titleRow {
+            width: 100%;
+            height: 1rem;
+            line-height: 1rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .contentRow {
+            width: 100%;
+            height: 1rem;
+            line-height: 1rem;
+            /*border: red solid 1px;*/
+        }
+
+        .content1 {
+            text-align: left;
+            width: 33%;
+            float: left
+        }
+
+        .content2 {
+            padding-left: 0.2rem;
+            width: 34%;
+            float: left;
+            text-align: left;
+        }
+
+        .content3 {
+            padding-left: 0.2rem;
+            width: 33%;
+            text-align: left;
+            float: left;
+            /*border: black solid 1px*/
+        }
+
+        ul {
+            background: white
+        }
+
+        ul li {
+            border-bottom: #ebecee solid 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topBox">
+        <div class="topBox_row">
+            <div class="row_left">
+                <span class="aui-iconfont aui-icon-left" onclick="turnBack()" tapmode></span>
+            </div>
+            <div class="row_center_text">排行榜</div>
+        </div>
+        <div class="topBox_row aui-row">
+            <div class="aui-col-xs-4">
+                <div class="left_label">NO.1</div>
+            </div>
+            <div class="aui-col-xs-4" id="">
+                <div class="meter_imgBox"></div>
+            </div>
+            <div class=" aui-col-xs-4" id="">
+                <div class="right_label">绿色节能之星</div>
+            </div>
+        </div>
+        <div class="topBox_row aui-row">
+            <div id="meterNum">0013992295</div>
+        </div>
+        <div class="topBox_row aui-row">
+            <div class="aui-col-xs-4" style="text-align:right;padding-right:0.7rem">
+                <div class="whiteTitle" id="meterStatus1">
+                    <span class="icon1"></span>御龙华庭
+                </div>
+            </div>
+            <div class="aui-col-xs-4" style="text-align:center">
+                <div class="whiteTitle" id="meterType1">
+                    <span class="icon2"></span>10栋2楼强电井房
+                </div>
+            </div>
+            <div class="aui-col-xs-4" style="text-align:left;padding-left:1rem">
+                <div class="whiteTitle" id="onlineStatus1">
+                    <span class="icon3"></span>0kWh
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="middleBox">
+        <ul id="list" style="text-align:center">
+            <!-- <li class="aui-row">
+                <div class="left_box_yellow aui-col-xs-3">
+                    NO.2
+                </div>
+                <div class="right_box aui-col-xs-9">
+                    <div class="titleRow">xxxxxxx</div>
+                    <div class="contentRow">
+                        <div class="content1">
+                            <div class="grayTitle" id="meterStatus2">
+                                <span class="icon4"></span>xxxxxxx
+                            </div>
+                        </div>
+                        <div class="content2">
+                            <div class="grayTitle" id="meterType2">
+                                <span class="icon5"></span>xxxxxxx
+                            </div>
+                        </div>
+                        <div class="content3">
+                            <div class="grayTitle" id="onlineStatus2">
+                                <span class="icon6"></span>0kWh
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li> -->
+        </ul>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        var group_id = api.pageParam.id
+        getRankList(group_id)
+    };
+
+    // 获取排行信息
+    function getRankList(group_id) {
+        var url = HEADER + 'app/meter/check_getMeterRankByGroup.do'
+        $.ajax({
+            type: 'get',
+            url: url,
+            data: {
+                "id": group_id
+            },
+            success: function(data) {
+                console.log(JSON.stringify(data));
+                if (data.code === 1 && data.data != null) {
+                    var html = ""
+                    var jsonArr = data.data
+                    for (var i = 0; i < jsonArr.length; i++) {
+                        if (i === 0) {
+                            console.log(JSON.stringify(jsonArr[i]));
+                            $("#meterNum").html((jsonArr[i].mid === null ? "---" : jsonArr[i].mid))
+                            $("#meterStatus1").html('<span class="icon1"></span>' + (jsonArr[i].group_name === null ? "---" : jsonArr[i].group_name))
+                            $("#meterType1").html('<span class="icon2"></span>' + (jsonArr[i].name === null ? "---" : jsonArr[i].name))
+                            $("#onlineStatus1").html('<span class="icon3"></span>' + (jsonArr[i].w === null ? 0 : jsonArr[i].w) + 'kWh')
+                        } else {
+                            if (i < 3) {
+                                var numHtml = '<div class="left_box_yellow aui-col-xs-3">NO.' + (i + 1) + '</div>'
+                            } else {
+                                var numHtml = '<div class="left_box_gray aui-col-xs-3">NO.' + (i + 1) + '</div>'
+                            }
+                            html += '<li class="aui-row">' + numHtml +
+                                '       <div class="right_box aui-col-xs-9">' +
+                                '           <div class="titleRow"  style="text-align:left">' + (jsonArr[i].mid === null ? "---" : jsonArr[i].mid) + '</div>' +
+                                '           <div class="contentRow">' +
+                                '               <div class="content1">' +
+                                '                   <div class="grayTitle">' +
+                                '                        <span class="icon4"></span>' + (jsonArr[i].group_name === null ? "---" : jsonArr[i].group_name) +
+                                '                   </div>' +
+                                '               </div>' +
+                                '               <div class="content2">' +
+                                '                   <div class="grayTitle">' +
+                                '                        <span class="icon5"></span>' + (jsonArr[i].name === null ? "---" : jsonArr[i].name) +
+                                '                   </div>' +
+                                '               </div>' +
+                                '               <div class="content3">' +
+                                '                   <div class="grayTitle">' +
+                                '                        <span class="icon6"></span>' + (jsonArr[i].w === null ? 0 : jsonArr[i].w) + 'kWh' +
+                                '                   </div>' +
+                                '               </div>' +
+                                '           </div>' +
+                                '      </div>' +
+                                '    </li>'
+                        }
+                        $("#list").html(html)
+                    }
+                }
+            },
+            error: function(err) {
+                $("#list").html("请求失败，请检查网络！")
+            }
+        })
+    }
+</script>
+
+</html>

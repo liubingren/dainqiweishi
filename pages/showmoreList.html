@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no">
+    <title>加载更多列表页</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+
+    <style>
+        body {
+            background: #f9f9f9;
+            color: #484848;
+        }
+
+        .aui-content {
+            background: #ebecee;
+        }
+
+        .tableList {
+            background: white
+        }
+
+        table {
+            width: 96%;
+            margin: 0 2% 2% 2%;
+        }
+
+        tbody tr {
+            border-bottom: #eee solid 1px;
+        }
+
+        tr td {
+            padding: 0.5rem 0.1rem;
+        }
+
+        thead tr {
+            margin-bottom: -0.5rem
+        }
+
+        thead tr td {
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        tbody tr td {
+            font-size: 0.6rem;
+            text-align: center;
+            color: #787878;
+        }
+
+        .showmore {
+            height: 1.6rem;
+            line-height: 1.4rem;
+            font-size: 0.7rem;
+            width: 100%;
+            text-align: center;
+            color: #787878;
+        }
+
+        #search-input {
+            border: none;
+            position: relative;
+            top: 0.1rem
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav">
+        <div class="aui-pull-left aui-btn">
+            <span class="aui-iconfont aui-icon-left" onclick="turnBack()" tapmode></span>
+        </div>
+        <div class="aui-title">报警信息</div>
+    </header>
+    <div class="aui-content">
+        <div class="aui-searchbar-wrap" id="search" style="clear:left;">
+            <div class="aui-searchbar aui-border-radius" tapmode onclick="doSearch(this);" style="width:95%;border-radius:15px">
+                <i class="aui-iconfont aui-icon-search"></i>
+                <div class="aui-searchbar-text">
+                    请输入搜索内容
+                </div>
+                <div class="aui-searchbar-input">
+                    <input type="text" placeholder="请输入电表编号" id="search-input">
+                </div>
+                <i class="aui-iconfont aui-icon-close" tapmode onclick="clearInput()"></i>
+            </div>
+            <div class="aui-searchbar-cancel" tapmode onclick="cancelSearch()" style="color:#888">取消</div>
+            <div class="aui-searchbar-cancel" tapmode onclick="getMsg(this);" style="color:#888">确定</div>
+        </div>
+        <div class="tableList">
+            <table>
+                <thead>
+                    <tr>
+                        <td class="td_1">电表编号</td>
+                        <td class="td_2">设备名称</td>
+                        <td class="td_3">报警时间</td>
+                        <td class="td_4">报警类型</td>
+                        <td class="td_5">操作</td>
+                    </tr>
+                </thead>
+                <tbody id="list">
+                    <!-- <tr>
+                        <td class="td_1">8002046519</td>
+                        <td class="td_2">一层303</td>
+                        <td class="td_3">2018-04-02 12:23:24</td>
+                        <td class="td_4">漏电</td>
+                        <td class="td_5 aui-text-blue" tapmode onclick="intoMeterDetail(this)">查看</td>
+                    </tr> -->
+                </tbody>
+            </table>
+            <div class="showmore" tapmode onclick="showMore()">查看更多</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+    var listPage = 1; //url中有这个参数
+    var pageTotal = 0;
+    var param = "";
+    apiready = function() {
+        api.parseTapmode()
+            // var cname = api.pageParam.cname.split("(");
+        getAlarmmsgList();
+        api.addEventListener({
+            name: 'delMeterFromMeterDetail'
+        }, function(ret, err) {
+            listPage = 1;
+            pageTotal = 0;
+            param = "";
+            $("#list").html("");
+            getAlarmmsgList(); //重新加载第一页内容
+        });
+    };
+
+    function getAlarmmsgList(m_id) {
+        if (!m_id) {
+            m_id = param
+        } else if (m_id) {
+            param = m_id
+        }
+        api.showProgress({ //展示进程
+            style: 'default',
+            animationType: 'fade',
+            title: '正在获取...',
+            text: '请稍候...',
+            modal: false
+        });
+        // var lid = api.pageParam.cid;
+        console.log(listPage + "+" + param);
+        $.ajax({
+            type: "get",
+            url: HEADER + "app/home/check_newFalutMeters.do",
+            data: {
+                "page": listPage,
+                "pageSize": "10",
+                "mid": m_id
+            },
+            success: function(data) {
+                console.log(JSON.stringify(data))
+                if (data.code == "1" || data.code == 1) {
+                    pageTotal = data.data.totalPage; //全部页数
+                    var jsonArr = data.data.list
+                    var html = "";
+                    if (jsonArr == "" || jsonArr == null || jsonArr == "undefined" || jsonArr == undefined) {
+                        // $('table').html("暂无数据")
+                        // html += "<div style='text-align:center;color:#575757'>暂无数据！</div>";
+                    } else {
+                        for (var i = 0; i < jsonArr.length; i++) {
+                            html += '<tr data-id="'+ jsonArr[i].id+'">' +
+                                '       <td>' + jsonArr[i].mid + '</td>' +
+                                '       <td>' + jsonArr[i].name + '</td>' +
+                                '       <td>' + jsonArr[i].fault_time + '</td>' +
+                                '       <td>' + jsonArr[i].报警类型 + '</td>' +
+                                '       <td class="aui-text-blue" tapmode onclick="intoMeterDetail(this)">查看</td>' +
+                                '</tr>'
+                        }
+                    }
+                    $("#list").append(html);
+                    api.parseTapmode();
+                    if (listPage >= pageTotal) {
+                        $(".showmore").html("暂无更多")
+                    }
+                    refreshLoading(); //上拉刷新，下拉加载
+                } else {
+                    alert(data.msg);
+                }
+                api.hideProgress(); //隐藏进度状态
+            },
+            error: function(err) {
+                api.hideProgress(); //隐藏进度状态
+                console.log(JSON.stringify(err));
+            }
+        });
+    }
+
+    // 进入电表详情页
+    function intoMeterDetail(dom) {
+        var id = $(dom).parent().attr("data-id");
+        console.log("id"+id);
+        api.openWin({
+            name: 'meterDetail',
+            url: './meterDetail.html',
+            pageParam: {
+                id: id
+            }
+        });
+    }
+
+    // 查看更多
+    function showMore() {
+        if (listPage < pageTotal) { //当前页数小于全部页数（意思就是还不是最后一页）
+            listPage++; //页数加一（即下一页） getAlarmmsgList(); //加载下一页数据 }
+            getAlarmmsgList(param)
+        } else {
+            $(".aui-card-list-footer").html("暂无更多")
+        }
+    }
+
+    //上拉刷新
+    function refreshLoading() {
+        //上拉刷新
+        api.setRefreshHeaderInfo({
+            visible: true,
+            loadingImg: 'widget://image/refresh.png',
+            bgColor: '#ccc',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function(ret, err) {
+            listPage = 1;
+            $("#list").html("");
+            getAlarmmsgList(); //重新加载第一页内容
+            api.refreshHeaderLoadDone(); //通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+        });
+    }
+
+    /*****************   搜   索    功    能    ******************/
+
+    //搜索条函数
+    function doSearch() {
+        $api.addCls($api.dom(".aui-searchbar-wrap"), "focus");
+        $api.dom('.aui-searchbar-input input').focus();
+    }
+
+    //取消搜索
+    function cancelSearch() {
+        $api.removeCls($api.dom(".aui-searchbar-wrap.focus"), "focus");
+        $api.val($api.byId("search-input"), '');
+        $api.dom('.aui-searchbar-input input').blur();
+        $("#list").html("");
+        param = ""; //取消搜索时清除param的值
+        getAlarmmsgList("");
+    }
+
+    //清空搜索内容
+    function clearInput() {
+        $api.val($api.byId("search-input"), '');
+    }
+
+    //搜索的内容
+    function getMsg(dom) {
+        param = $("#search-input").val(); //小区名称
+        $("#list").html("");
+        getAlarmmsgList(param);
+    };
+</script>
+
+</html>

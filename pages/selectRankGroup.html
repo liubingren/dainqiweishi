@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<title>编辑电表详情</title>
+	<link rel="stylesheet" type="text/css" href="../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+	<link rel="stylesheet" type="text/css" href="../css/common.css" />
+
+	<style>
+		html,
+		body {
+			background: white
+		}
+
+		p {
+			heigth: 1.3rem;
+			line-height: 1.3rem;
+			padding-top: 0.5rem;
+			font-size: 0.8rem;
+			text-align: center;
+			color: #484848;
+		}
+
+		.blue_line {
+			width: 4%;
+			margin-left: 48%;
+			height: 2px;
+			background: #007ac6;
+		}
+
+		.formBox {
+			padding-top: 0.7rem;
+		}
+
+		.formBox .aui-row {
+			width: 70%;
+			margin: 0.5rem 15%;
+			height: 2rem;
+			line-height: 2rem;
+		}
+
+		input[type='text'] {
+			/*border: #007ac6 solid 1px;*/
+			border: #484848 solid 1px;
+			border-radius: 5px;
+			height: 1.1rem;
+			line-height: 1.1rem;
+			min-height: 1.9rem;
+			font-size: 0.7rem;
+			padding-left: 0.25rem;
+		}
+
+		.submitEditBtn {
+			height: 1.9rem;
+			line-height: 1.9rem;
+			width: 30%;
+			margin: 1rem 35%;
+			text-align: center;
+			background: linear-gradient(#9ed8f6, #007ac6);
+			border-radius: 3px;
+			color: white;
+		}
+
+		.aui-title-blue {
+			color: #007ac6;
+			text-align: right;
+			padding-right: 0.5rem;
+		}
+
+		.aui-title-blue span {
+			color: red
+		}
+
+		.selector {
+			border: #484848 solid 1px;
+			height: 1.1rem;
+			line-height: 1.1rem;
+			border-radius: 5px;
+			min-height: 1.9rem;
+			padding-left: 0.25rem;
+			color: #484848
+		}
+
+		#province {
+			width: 110%;
+			/*margin-right: 5%;*/
+			padding: 0 0.9rem 0 0.25rem;
+			/*overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;*/
+		}
+
+		#city {
+			width: 90%;
+			margin-left: 10%;
+			padding: 0 1.15rem 0 0.25rem;
+			overflow: hidden;
+			/*text-overflow: ellipsis;
+            white-space: nowrap;*/
+		}
+
+		.icon_down {
+			height: 1.9rem;
+			line-height: 1.9rem;
+			width: 0.8rem;
+			float: left;
+			position: relative;
+			color: black;
+			font-size: 0.7rem;
+			background: url('../image/meters/icon_down.png') no-repeat;
+			background-size: 90%;
+			opacity: 0.9;
+		}
+
+		#province+.icon_down {
+			top: -2rem;
+			left: 82%;
+			background-position: 0 0.75rem;
+			/*border: red solid 1px;*/
+		}
+
+		#city+.icon_down {
+			top: -2rem;
+			left: 82%;
+			background-position: 0 0.75rem;
+		}
+
+		.selector+.icon_down {
+			top: -2rem;
+			left: 88%;
+			background-position: 0 0.75rem;
+		}
+
+		.unit {
+			height: 1.9rem;
+			line-height: 1.9rem;
+			width: 2.2rem;
+			float: left;
+			position: relative;
+			color: #484848;
+			font-size: 0.6rem;
+			top: -1.9rem;
+			left: 48%;
+			text-align: right;
+		}
+
+		.blue-color{
+			color:#007ac6
+		}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav">
+		<div class="aui-pull-left aui-btn" onclick="turnBack()" tapmode>
+			<span class="aui-iconfont aui-icon-left"></span>
+		</div>
+		<div class="aui-title">选择电表分组</div>
+	</header>
+	<div class="aui-content">
+		<ul class="aui-list aui-list-in" id="list">
+			<!-- <li class="aui-list-item" tapmode onclick="intoRankList(this)">
+				<div class="aui-list-item-label-icon">
+					<i class="aui-iconfont aui-icon-location blue-color"></i>
+				</div>
+				<div class="aui-list-item-inner aui-list-item-arrow">
+					御龙华庭
+				</div>
+			</li>
+			<li class="aui-list-item" tapmode onclick="intoRankList(this)">
+				<div class="aui-list-item-label-icon">
+					<i class="aui-iconfont aui-icon-location blue-color"></i>
+				</div>
+				<div class="aui-list-item-inner aui-list-item-arrow">
+					御龙华庭
+				</div>
+			</li> -->
+		</ul>
+	</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+<script type="text/javascript" src="../script/city.js"></script>
+
+<script type="text/javascript">
+	var toast
+	apiready = function() {
+		api.parseTapmode()
+		toast = new auiToast();
+		getMeterMsg()
+	};
+
+	// 获取电表信息
+	function getMeterMsg() {
+		var url = HEADER + 'app/meter/check_getUserAllGroup.do'
+		$.ajax({
+			type: 'get',
+			url: url,
+			success: function(data) {
+				// console.log(JSON.stringify(data));
+				if (data.code === 1 && data.data != null) {
+					var html = ""
+					var jsonArr = data.data
+					for (var i = 0; i < jsonArr.length; i++) {
+						html += '<li class="aui-list-item" data-id="' + jsonArr[i].id + '" tapmode onclick="intoRankList(this)">' +
+							'		<div class="aui-list-item-label-icon">'+
+							'			<i class="aui-iconfont aui-icon-menu blue-color"></i>'+
+							'		</div>'+
+							'		<div class = "aui-list-item-inner aui-list-item-arrow" >' + jsonArr[i].group_name + '</div>' +
+							'	 </li>'
+					}
+					$("#list").html(html)
+				}
+			},
+			error: function(err) {
+				$("#list").html("请求失败，请检查网络！")
+			}
+		})
+	}
+
+	// 提交编辑
+	function intoRankList(dom) {
+		var group_id = $(dom).attr("data-id")
+		console.log("进入排行榜：" + group_id);
+		api.openWin({
+			name: 'rankList',
+			url: './rankList.html',
+			pageParam: {
+				id: group_id
+			}
+		});
+	}
+</script>
+
+</html>

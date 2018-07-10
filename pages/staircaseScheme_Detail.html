@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>阶梯方案详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+
+    <style>
+        html,
+        body {
+            background: white
+        }
+
+        .title_scheme {
+            /*width: 100%;
+            height: 1.8rem;
+            line-height: 2.5rem;*/
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: #484848;
+            width: 40%;
+            margin-left: 30%;
+            float: left;
+            text-align: center;
+        }
+
+        .blue_line {
+            width: 4%;
+            margin-left: 48%;
+            height: 2px;
+            background: #007ac6;
+        }
+
+        .blue_line+div {
+            height: 1rem;
+            line-height: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: #787878;
+        }
+
+        .title_city {
+            width: 100%;
+            /*margin-left: 25%;*/
+            /*float: left;*/
+            text-align: center;
+        }
+
+        .icon_edit_gray {
+            float: left;
+            width: 1rem;
+            height: 1rem;
+            line-height: 1rem;
+            background: url('../image/setting/icon_edit_gray.png');
+            background-repeat: no-repeat;
+            background-size: 80%;
+            background-position-y: 0.35rem;
+            /*border: #aaa solid 1px;*/
+            margin-right: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .icon_edit_blue {
+            float: left;
+            width: 1rem;
+            height: 1rem;
+            line-height: 1rem;
+            background: url('../image/setting/icon_edit_blue.png');
+            background-repeat: no-repeat;
+            background-size: 80%;
+            background-position-y: 0.35rem;
+            /*border: #aaa solid 1px;*/
+            margin-right: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .icon_delete_gray {
+            float: left;
+            width: 1rem;
+            height: 1rem;
+            line-height: 1rem;
+            background: url('../image/setting/icon_delete_gray.png');
+            background-repeat: no-repeat;
+            background-size: 75%;
+            background-position-y: 0.25rem;
+            /*border: #aaa solid 1px;*/
+            margin-right: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .icon_delete_blue {
+            float: left;
+            width: 1rem;
+            height: 1rem;
+            line-height: 1rem;
+            background: url('../image/setting/icon_delete_blue.png');
+            background-repeat: no-repeat;
+            background-size: 75%;
+            background-position-y: 0.25rem;
+            /*border: #aaa solid 1px;*/
+            margin-right: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        input[type="checkbox"] {
+            -webkit-appearance: none;
+            background: #f3f8fc url('../image/others/icon_radio_gray.png') no-repeat;
+            background-position: 1px;
+            background-size: 85%;
+            height: 0.9rem;
+            vertical-align: middle;
+            width: 0.9rem;
+        }
+        /*结合checked选择器实现选择变样式： 1 2 3 */
+
+        input[type="checkbox"]:checked {
+            -webkit-appearance: none;
+            background: #f3f8fc url('../image/others/icon_radio_blue.png') no-repeat;
+            background-position: 1px;
+            background-size: 85%;
+            height: 0.9rem;
+            vertical-align: middle;
+            width: 0.9rem;
+        }
+
+        table {
+            width: 93%;
+            border: #aaa solid 1px;
+            margin: 0.5rem auto;
+        }
+
+        td {
+            text-align: center;
+            border: #fff solid 1px;
+        }
+
+        thead td {
+            height: 1.3rem;
+            line-height: 1.3rem;
+            font-size: 0.7rem;
+            color: #595d60;
+            background-color: #cde4f4;
+        }
+
+        tbody td {
+            height: 1.5rem;
+            line-height: 1.5rem;
+            font-size: 0.6rem;
+            color: #757678;
+            background-color: #f3f8fc;
+        }
+
+        .thead_unit {
+            font-size: 0.55rem !important;
+            color: #787878;
+            margin-top: -0.5rem;
+        }
+        /*编辑*/
+
+        .editBox {
+            height: 1.5rem;
+            line-height: 1.5rem;
+            border: #aaa solid 1px;
+            border-radius: 4px;
+            background: white;
+            text-align: center;
+            font-size: 0.65rem;
+            vertical-align: middle;
+        }
+
+        .tdBox input[type="text"] {
+            margin-top: 0.25rem;
+            height: 1rem;
+            line-height: 1rem;
+            width: 100%;
+            min-height: 1rem;
+            text-align: center;
+            font-size: 0.65rem;
+            color: #787878
+        }
+
+        .oninput {
+            border: #007ac6 solid 1px;
+        }
+
+        .cancelBtn {
+            float: left;
+            width: 28%;
+            margin: 1rem 3% 0 19%;
+            text-align: center;
+            background: #dadada;
+            font-size: 0.75rem;
+            color: white;
+            height: 1.75rem;
+            line-height: 1.75rem;
+            border-radius: 0.25rem;
+        }
+
+        .ensureBtn {
+            float: left;
+            width: 28%;
+            margin: 1rem 19% 0 3%;
+            text-align: center;
+            background: linear-gradient(#9ed8f6, #007ac6);
+            font-size: 0.75rem;
+            color: white;
+            height: 1.75rem;
+            line-height: 1.75rem;
+            border-radius: 0.25rem;
+        }
+
+        .btn_row {
+            display: none;
+        }
+
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav">
+        <div class="aui-pull-left aui-btn" onclick="turnBack()" tapmode>
+            <span class="aui-iconfont aui-icon-left"></span>
+        </div>
+        <div class="aui-title">阶梯方案详情</div>
+        <div class="aui-pull-right aui-btn" onclick="addDetail()" tapmode>
+            新增&nbsp;
+        </div>
+    </header>
+    <div class="aui-content">
+        <div class="aui-row">
+            <div class="title_scheme" id="title_scheme">广州阶梯方案</div>
+            <!-- <div class="icon_edit_gray" id="editBtn" tapmode> </div> -->
+            <div class="icon_delete_gray" id="deleteBtn" tapmode onclick="deleteDetail()" disabled> </div>
+        </div>
+        <div class="blue_line"> </div>
+        <div class="title_city" id="city">所属城市：--</div>
+        <table>
+            <thead>
+                <tr>
+                    <td style="width:14%">选择</td>
+                    <td style="width:22%">开始度数</td>
+                    <td style="width:22%">结束度数</td>
+                    <td style="width:21%">价格
+                        <div class="thead_unit">(元)</div>
+                    </td>
+                    <td style="width:21%">增量价格
+                        <div class="thead_unit">(元)</div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody id="tableContent">
+                <!-- <tr>
+                    <td><input type="checkbox" name="detail" onchange="singleSelection()" /></td>
+                    <td>
+                        <div class="tdBox" data-value="10">10</div>
+                    </td>
+                    <td>
+                        <div class="tdBox" data-value="20">20</div>
+                    </td>
+                    <td>
+                        <div class="tdBox" data-value="30">30</div>
+                    </td>
+                    <td>
+                        <div class="tdBox" data-value="40">40</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="detail" onchange="singleSelection()" /></td>
+                    <td>
+                        <div class="tdBox" data-value="10">10</div>
+                    </td>
+                    <td>
+                        <div class="tdBox" data-value="20">20</div>
+                    </td>
+                    <td>
+                        <div class="tdBox" data-value="30">30</div>
+                    </td>
+                    <td>
+                        <div class="tdBox" data-value="40">40</div>
+                    </td>
+                </tr>
+                <tr data-id="32y4328bd3453">
+                    <td><input type="checkbox" name="detail" onchange="singleSelection()" /></td>
+                    <td>
+                        <div class="tdBox" data-value="20">20</div>
+                    </td>
+                    <td>
+                        <div class="tdBox" data-value="30">30</div>
+                    </td>
+                    <td>
+                        <div class="tdBox" data-value="40">40</div>
+                    </td>
+                    <td>
+                        <div class="tdBox" data-value="50">50</div>
+                    </td>
+                </tr> -->
+            </tbody>
+        </table>
+        <div class="btn_row">
+            <div class="cancelBtn" tapmode onclick="cancelEdit()">取消</div>
+            <div class="ensureBtn" tapmode onclick="ensureEdit()">确认</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+
+<script type="text/javascript">
+    var toast
+    var nextpageParam
+    apiready = function() {
+        api.parseTapmode()
+        toast = new auiToast();
+        getSchemeList()
+            // inputonblur()
+        singleSelection()
+        api.addEventListener({
+            name: 'refreshPage'
+        }, function(ret, err) {
+            getSchemeList()
+        });
+        var city_name = api.pageParam.city_name
+        $("#city").html("所属城市："+city_name)
+        var name = api.pageParam.name
+        $("#title_scheme").html(name)
+    };
+
+
+    // 获取方案列表
+    function getSchemeList() {
+        var id = api.pageParam.id; //方案id
+        console.log(id);
+        var url = HEADER + 'app/ladderPrice/check_getLadderPriceList.do'
+        $.ajax({
+            type: 'get',
+            url: url,
+            data: {
+                "p_id": id
+            },
+            success: function(data) {
+                console.log("方案列表：" + JSON.stringify(data));
+                if (data.code == 1 || data.code == "1") {
+                    var html = ""
+                    var jsonArr = data.data;
+                    var inputHtml = '<input type="checkbox" disabled/>'
+                    for (var i = 0; i < jsonArr.length; i++) {
+                        if (i == (jsonArr.length - 1)) {
+                            console.log(i);
+                            inputHtml = '<input type="checkbox"/>'
+                            nextpageParam = jsonArr[i].endw
+                                // $api.setStorage('startw', jsonArr[i].endw);
+                        }
+                        html += '<tr data-id="' + jsonArr[i].id + '" onchange="singleSelection(this)">' +
+                            '       <td>' + inputHtml + '</td>' +
+                            '       <td><div class="tdBox" data-value="' + jsonArr[i].startw + '">' + jsonArr[i].startw + '</div></td>' +
+                            '       <td><div class="tdBox" data-value="' + jsonArr[i].endw + '">' + jsonArr[i].endw + '</div></td>' +
+                            '       <td><div class="tdBox" data-value="' + jsonArr[i].price + '">' + jsonArr[i].price + '</div></td>' +
+                            '       <td><div class="tdBox" data-value="' + jsonArr[i].increment_price + '">' + jsonArr[i].increment_price + '</div></td>' +
+                            '    </tr>'
+                    }
+                    $("#tableContent").html(html)
+                }
+            }
+        })
+    }
+
+
+    // 删除
+    function deleteDetail() {
+        api.confirm({
+            title: '提示信息',
+            msg: '确认删除该阶梯方案详情？',
+            buttons: ['确定', '取消']
+        }, function(ret, err) {
+            console.log(JSON.stringify(ret));
+            if (ret.buttonIndex == 1) {
+                console.log("进来了");
+                // var ids = []
+                // $("input[type='checkbox']:checked").each(function(){
+                //     ids.push($(this).parent('td').parent('tr').attr("data-id"))
+                // })
+                var id = $("input[type='checkbox']:checked").parent('td').parent('tr').attr("data-id")
+                console.log("记录编号：" + id);
+                var url = HEADER + 'app/ladderPrice/delete_deleteLadderPrice.do'
+                $.ajax({
+                    type: 'post',
+                    url: url,
+                    data: {
+                        "id": id
+                    },
+                    success: function(data) {
+                        console.log(JSON.stringify(data));
+                        if (data.code == 1) {
+                            toast.success({
+                                title: "删除成功",
+                                duration: 2000
+                            });
+                            getSchemeList()
+                        } else {
+                            toast.fail({
+                                title: "删除失败",
+                                duration: 2000
+                            });
+                        }
+                    }
+                })
+            }
+        });
+    }
+
+    //新增
+    function addDetail() {
+        var id = api.pageParam.id; //方案id
+        var name = api.pageParam.name
+        api.openWin({
+            name: 'staircaseScheme_Add',
+            url: './staircaseScheme_Add.html',
+            pageParam: {
+                id: id,
+                startw: nextpageParam,
+                name:name
+            }
+        });
+    }
+
+    // 检测数字的长度
+    function checkNumCount(dom) {
+        if ($(dom).val() != "") {
+            var value = parseInt($(dom).val()) + "";
+            // var value = $(dom).val();
+            console.log(value);
+            if (value == "NaN") {
+                alert("请输入正确的数字!");
+                $(dom).val("");
+            } else if (value * 1 < 0) {
+                alert("请输入正数！")
+                $(dom).val("");
+            } else {
+                $(dom).val(parseInt(Math.round(value)));
+            };
+        } else {
+            alert("不能为空！")
+        }
+    }
+
+    //输入框颜色
+    function inputBorderStyle() {
+        $(".tdBox").each(function() {
+            $(this).children().onblur(function() {
+                $(this).removeClass("oninput")
+            })
+        })
+    }
+
+    // 单选时可点击修改、删除图标
+    function singleSelection() {
+        var checkednNum = $("input[type='checkbox']:checked").length
+        console.log(checkednNum);
+        var el2 = $api.byId('deleteBtn');
+        if (checkednNum == 1) {
+            $api.removeCls(el2, 'icon_delete_gray');
+            $api.addCls(el2, 'icon_delete_blue');
+            $("#deleteBtn").prop("disabled", false)
+        } else {
+            $api.removeCls(el2, 'icon_delete_blue');
+            $api.addCls(el2, 'icon_delete_gray');
+            $("#deleteBtn").prop("disabled", true)
+        }
+    }
+
+    // // 点击修改
+    // function editDetail() {
+    //     console.log("点击修改");
+    //     // 选中的那行的tdBox的边框显示
+    //     $("input[type='checkbox']:checked").prop("disabled", true) //禁止取消当前已选的
+    //     $("input[type='checkbox']:checked").parent("td").nextAll().children().addClass("editBox")
+    //     $(".btn_row").css("display", "block")
+    //     console.log($(".editBox").length);
+    //     $(".editBox").each(function() {
+    //         var value = $(this).attr("data-value");
+    //         $(this).html('<input type="text" value="' + value + '" oninput="checkNumCount(this)"/>')
+    //     })
+    // }
+
+    // // 确认提交修改
+    // function ensureEdit() {
+    //     var url = HEADER + ''
+    //     $.ajax({
+    //         type: 'post',
+    //         url: url,
+    //         data: {
+    //             "id": id
+    //         },
+    //         success: function(data) {
+    //             console.log(JSON.stringify(data));
+    //             if (data.code == 1) {
+    //
+    //                 toast.success({
+    //                     title: "修改成功",
+    //                     duration: 2000
+    //                 });
+    //             } else {
+    //                 toast.fail({
+    //                     title: "提交失败",
+    //                     duration: 2000
+    //                 });
+    //             }
+    //         }
+    //     })
+    //     $("#btn_row").css("display", "none")
+    // }
+    //
+    // // 取消修改
+    // function cancelEdit() {
+    //     $("input[type='checkbox']").prop("disabled", false) //禁止取消当前已选的
+    //     getSchemeList() //刷新列表
+    //     $(".btn_row").css("display", "none")
+    // }
+</script>
+
+</html>

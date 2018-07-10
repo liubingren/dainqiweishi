@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>电表列表(添加电表)</title>
+	<link rel="stylesheet" type="text/css" href="../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+	<link rel="stylesheet" type="text/css" href="../css/common.css" />
+	<style>
+		header {
+			position: relative;
+		}
+
+		header span {
+			position: absolute;
+			bottom: 0;
+			right: 10px;
+		}
+
+		#lists {
+			/*padding-top: 120px;*/
+			position: absolute;
+			top: 6rem;
+			width: 100%;
+		}
+
+		#lists li {
+			background: #fff;
+			padding: 5px 10px;
+			border-bottom: 1px solid #ccc;
+			color: #444;
+		}
+
+		#lists li div {
+			margin-top: 10px;
+			font-size: 14px;
+		}
+
+		#lists li div:first-of-type {
+			margin-top: 0px;
+		}
+
+		#lists li div:first-of-type span {
+			width: 60%;
+			position: relative;
+		}
+
+		#lists li div a {
+			text-decoration: underline;
+			font-size: 18px;
+		}
+
+		#lists li div img {
+			position: absolute;
+			top: -3px;
+			right: -25px;
+		}
+
+		#moddle {
+			display: none;
+		}
+
+		.moddle_md {
+			width: 100%;
+			height: 100%;
+			background: #000;
+			opacity: 0.25;
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 99;
+		}
+
+		.content {
+			width: 80%;
+			background: #ffffff;
+			position: fixed;
+			top: 75px;
+			left: 50%;
+			margin-left: -40%;
+			z-index: 100;
+			border-radius: 8px;
+		}
+
+		.content>div {
+			display: flex;
+			flex-flow: row;
+			align-items: center;
+		}
+
+		.content>div span:first-child {
+			display: inline-block;
+			width: 30%;
+			text-align: left;
+		}
+
+		.content h3 {
+			text-align: center;
+			font-size: 20px;
+			height: 45px;
+			line-height: 55px;
+			font-weight: 700;
+		}
+
+		.content div {
+			margin-top: 10px;
+		}
+
+		.content div span {
+			margin: 4px 0 0 10%;
+		}
+
+		.content input,
+		.content select {
+			font-size: 13px;
+			padding: 5px 10px;
+			min-height: 0;
+			width: 50%;
+			margin: 0;
+			background-color: #ffffff;
+			border: 1px solid rgba(0, 0, 0, .2);
+		}
+
+		.content select {
+			background: url("../image/angle-down.png") no-repeat 93% center;
+		}
+
+		.content select#province,
+		.content select#city {
+			width: 24%;
+			background: none;
+			padding: 0;
+		}
+
+		.content select#city {
+			margin-left: 2%;
+		}
+
+		.content div:last-of-type {
+			margin: 0;
+			padding: 0;
+		}
+
+		.content div:last-of-type span {
+			display: inline-block;
+			width: 50%;
+			float: left;
+			text-align: center;
+			height: 45px;
+			line-height: 45px;
+			border-top: 1px solid #aaa;
+			color: #0894EC;
+			font-size: 20px;
+			background: #ffffff;
+		}
+
+		.content div:last-of-type span:first-of-type {
+			border-right: 1px solid #aaa;
+			border-radius: 0 0 0 10px;
+			margin: 20px 0 0 0px;
+		}
+
+		.content div:last-of-type span:last-of-type {
+			border-radius: 0 0 10px 0;
+			margin: 20px 0 0 0px;
+		}
+
+		.content .erweima {
+			position: absolute;
+			top: 5px;
+			right: 5px;
+		}
+		/*不可用状态
+		 给'#lists'列表的li添加noStatus样式就可以了
+		 * */
+
+		.noStatus div {
+			color: #aaa;
+		}
+
+		.noStatus div:first-of-type a {
+			color: #aaa;
+		}
+
+		#headerMsg {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			z-index: 99;
+		}
+
+		b {
+			font-weight: 500;
+		}
+
+		#search {
+			position: absolute;
+			top: 3.5rem;
+			width: 100%;
+		}
+
+		.aui-text-info {
+			color: #3498db !important;
+		}
+
+		.aui-searchbar input {
+			line-height: 1.4rem;
+			height: 1.4rem;
+			min-height: 1.4rem;
+		}
+
+		.aui-searchbar-input {
+			top: 0rem;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="headerMsg">
+		<header class="aui-bar aui-bar-nav" style="padding-top:1.25rem;background:#31aafb!important;">
+			<a class="aui-pull-left" tapmode onclick="back();" style="margin-left:10px;">
+				<span class="aui-iconfont aui-icon-left"></span>
+			</a>
+			<div class="aui-title" id="headerTitle">电表</div>
+			<span tapmode onclick="openQrCodeWin();">添加</span>
+		</header>
+		<div class="aui-searchbar-wrap demo" id="search">
+			<div class="aui-searchbar aui-border-radius" tapmode onclick="doSearch(this);" style="width:97%;">
+				<i class="aui-iconfont aui-icon-search"></i>
+				<div class="aui-searchbar-text">
+					请输入搜索内容
+				</div>
+				<div class="aui-searchbar-input">
+					<form action="#">
+						<input type="text" placeholder="请输入搜索内容" id="search-input" onchange="getMsg(this);">
+					</form>
+				</div>
+				<i class="aui-iconfont aui-icon-roundclosefill" tapmode onclick="clearInput()"></i>
+			</div>
+			<div class="aui-searchbar-cancel aui-text-info" tapmode onclick="cancelSearch()">
+				取消
+			</div>
+		</div>
+	</div>
+	<ul class="aui-list" id="lists">
+		<li class="" tapmode onclick='openMeterDetail(this);'>
+			<div>
+				<span>设备编号：<span>111000000000</span></span>
+				<a class='aui-pull-right' address='黄浦区' tapmode>更多</a>
+			</div>
+			<div>
+				<span class='aui-pull-left aui-ellipsis-1' style='width:200px;'>设备名称：<span>蒂凡尼</span></span>
+				<span class='aui-pull-right'>设备状态：<span>在线</span></span>
+				<div class='aui-clearfix'></div>
+			</div>
+			<div>
+				<span>今日用电：<span>50</span>Kwh</span>
+				<span class='aui-pull-right'>本月用电：<span></span>Kwh</span>
+			</div>
+		</li>
+	</ul>
+	<div id="moddle">
+		<div class="moddle_md"></div>
+		<div class="content">
+			<h3>添加设备</h3>
+			<!--<img tapmode class="erweima" src="../image/h.png" width="30" onclick="openErWeiMa();"/>-->
+			<div>
+				<span style="float:left">设备编号:</span>
+				<input type="text" name="meterId" id="meterId" />
+			</div>
+			<div>
+				<span style="float:left">设备秘钥:</span>
+				<input type="text" name="meterKey" id="meterKey" />
+			</div>
+			<div>
+				<span style="float:left">设备名称:</span>
+				<input type="text" name="name" id="name" />
+			</div>
+			<div>
+				<span style="float:left">电表类型:</span>
+				<select name="meter_type" id="meter_type">
+          <option value="" disabled>请选择</option>
+          <option value="">普通电表</option>
+        </select>
+			</div>
+			<div>
+				<span style="float:left">相位选择:</span>
+				<select name="phase" id="phase">
+          <option value="" disabled>请选择</option>
+          <option value="">单相</option>
+        </select>
+			</div>
+			<div>
+				<span style="float:left">设备单价:</span>
+				<input style="width:40%;" type="text" name="ele_price" id="ele_price" />
+				<span class="" style="margin-left:2px;font-size: 0.55rem;">元/kWh</span>
+			</div>
+			<div>
+				<span style="float:left">电表初值:</span>
+				<input style="width:40%;" type="text" name="initval" id="initval" />
+				<span class="" style="margin-left:2px;font-size: 0.55rem;">kWh</span>
+			</div>
+			<div>
+				<span style="float:left">所属城市:</span>
+				<select name="province" class="aui-pull-left" id="province">
+          <option value="" disabled>请选择</option>
+        </select>
+				<select name="city" class="aui-pull-right" id="city">
+          <option value="" disabled>请选择</option>
+        </select>
+			</div>
+			<div>
+				<span style="float:left">阶梯方案:</span>
+				<select name="lp_id" id="lp_id">
+          <option value="" disabled>请选择</option>
+        </select>
+			</div>
+			<div>
+				<span style="float:left">峰平谷方案:</span>
+				<select name="plv_id" id="plv_id">
+          <option value="" disabled>请选择</option>
+        </select>
+			</div>
+			<div>
+				<span onclick="closeModdle();" tapmode>取消</span>
+				<span onclick="addMeter();" tapmode>确定</span>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript">
+	var listPage = 1;
+	var totalPage = 0;
+	var html = "";
+	var provinceid, cityid;
+
+	apiready = function() {
+		api.parseTapmode();
+		if (api.pageParam) {
+			var pageParam = api.pageParam.name;
+			$("#headerTitle").html(pageParam);
+		}
+		// getLocationByParentId(); //获取省市列表
+
+		getMeterList();
+		api.addEventListener({
+			name: 'showMeterList'
+		}, function(ret, err) {
+			getMeterList();
+		});
+
+		api.addEventListener({
+			name: 'delMeterFromMeterDetail'
+		}, function(ret, err) {
+			getMeterList();
+		});
+
+		api.addEventListener({
+			name: 'isLogined'
+		}, function(ret, err) {
+			getMeterList();
+		});
+	};
+
+	//获取设备
+	function getMeterList(type) {
+		api.showProgress({
+			style: 'default',
+			animationType: 'fade',
+			title: '正在获取...',
+			text: '请稍候...',
+			modal: false
+		});
+
+		if (type) {
+			listPage++;
+			if (totalPage && (listPage > totalPage + 1)) { //当前页数多于总页数时中止请求
+				api.hideProgress();
+				return false;
+			}
+		} else {
+			listPage = 1;
+		}
+		var id = api.pageParam.id || '1';
+		var meternum = $("#search-input").val();
+		var url = HEADER + "app/meter/check_getMeterForPage.do";
+		$.ajax({
+			type: "get",
+			url: url,
+			data: {
+				group_id: id,
+				param: meternum || '',
+				page: listPage,
+				pagesize: 10
+			},
+			success: function(data) {
+				if (data && data.code == 1) {
+					totalPage = data.data.totalPage;
+					constructMeterList(data.data.list, type);
+					api.hideProgress();
+				}
+			},
+			error: function() {
+				api.hideProgress();
+			}
+		});
+	}
+
+	//构造电表列表
+	function constructMeterList(data, type) {
+		var str = '';
+		var haveMore;
+		$(".loadmore").remove(); //去除查看更多
+		if (data.length > 0) {
+			for (var i = 0; i < data.length; i++) {
+				var status = '';
+				if (data[i].online_status != '在线') {
+					status = 'noStatus';
+				}
+				var day_usew, month_usew;
+				if (data[i].day_usew == null || data[i].day_usew == 'null' || data[i].day_usew == 'undefined' || data[i].day_usew == undefined) {
+					day_usew = '--';
+				} else {
+					day_usew = data[i].day_usew;
+				}
+				if (data[i].month_usew == null || data[i].month_usew == 'null' || data[i].month_usew == 'undefined' || data[i].month_usew == undefined) {
+					month_usew = '--';
+				} else {
+					month_usew = data[i].month_usew;
+				}
+				str += '<li class="' + status + '" id="' + data[i].id + '" mid="' + data[i].mid + '" tapmode onclick="openMeterDetail(this);">';
+				str += '	<div>';
+				str += '		<span>设备编号：<span>' + data[i].mid + '</span></span>';
+				str += '		<a class="aui-pull-right" address="黄浦区" tapmode>更多</a>';
+				str += '	</div>';
+				str += '	<div>';
+				str += '		<span class="aui-pull-left aui-ellipsis-1" style="width:200px;">设备名称：<span>' + data[i].name + '</span></span>';
+				str += '		<span class="aui-pull-right">设备状态：<span>' + data[i].online_status + '</span></span>';
+				str += '		<div class="aui-clearfix"></div>';
+				str += '		</div>';
+				str += '		<div>';
+				str += '			<span>今日用电：<span>' + day_usew + '</span>kwH</span>';
+				str += '			<span class="aui-pull-right">本月用电：<span>' + month_usew + '</span>kwH</span>';
+				str += '		</div>';
+				str += '	</li>';
+			}
+			haveMore = '加载更多';
+		} else {
+			haveMore = '暂无更多';
+		}
+		str += '<li class="aui-card-list-footer aui-text-center loadmore" tapmode onclick="showMore()">';
+		str += '    <div>' + haveMore + '</div>';
+		str += '</li>';
+		if (type) {
+			$("#lists").append(str);
+		} else {
+			$("#lists").html(str);
+		}
+	}
+	//加载更多
+	function showMore() {
+		getMeterList('showMore');
+	}
+	//GET 根据父级编号查询区域信息,首级传0
+	function getLocationByParentId(id) {
+		var id = id;
+		$.ajax({
+			type: "get",
+			url: HEADER + "app/location/check_getLocationByParentId.do",
+			data: {
+				id: id || "d87cfe59cb9b4260ac0e1c909e6350bf"
+			},
+			success: function(data) {
+				if (data.code == 1) {
+					constructProvice(data.data, id);
+				}
+			},
+			error: function(ret) {
+				console.log(JSON.stringify(ret));
+			}
+		});
+	}
+	//构造省列表
+	function constructProvice(data, id) {
+		var str = '<option value="" disabled>请选择</option>';
+		for (var i = 0; i < data.length; i++) {
+			str += '<option aptionAttr="' + data[i].id + '">' + data[i].name + '</option>';
+		}
+		if (id) {
+			$("#city").html(str);
+		} else {
+			$("#province").html(str);
+		}
+	}
+
+	//添加设备
+	function addMeter() {
+		var privateKey = $("#meterKey").val();
+		var meterid = $("#meterId").val().trim();
+		var name = $("#name").val().trim();
+		var meter_type = $("#meter_type option:selected").html();
+		var phase = $("#phase option:selected").html();
+		var ele_price = $("#ele_price").val().trim();
+		var initval = $("#initval").val().trim();
+		var province_id = provinceid;
+		var city_id = cityid;
+		var lp_id = $("#lp_id").val();
+		var plv_id = $("#plv_id").val();
+		var groupId = api.pageParam.id || '1';
+
+		var url = HEADER + "app/meter/add_addMeter.do";
+		// var url1 = HEADER + "meter/testGetKey.do";
+		if (meterid != "") {
+			if (privateKey != "") {
+				$.ajax({
+					type: "post",
+					url: url,
+					data: {
+						mid: meterid,
+						name: name,
+						mkeys: privateKey,
+						meter_type: meter_type,
+						phase: phase,
+						ele_price: ele_price,
+						initval: initval,
+						province_id: province_id,
+						city_id: city_id,
+						lp_id: lp_id,
+						plv_id: plv_id,
+						group_id: groupId
+					},
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						if (data.code == 1) {
+							closeModdle();
+							getMeterList();
+						}
+						api.alert({
+							title: '提示信息',
+							msg: data.msg,
+						});
+					}
+				});
+			} else {
+				api.alert({
+					title: "提示信息",
+					msg: "请输入秘钥!"
+				});
+			}
+		} else {
+			api.alert({
+				title: "提示信息",
+				msg: "请输入设备号!"
+			});
+		}
+	};
+
+	//打开设备详情页面
+	function openMeterDetail(dom) {
+		var id = $(dom).attr("id");
+		var mid = $(dom).attr("mid");
+		api.openWin({
+			name: 'meterDetail',
+			url: 'meterDetail.html',
+			pageParam: {
+				mid: mid,
+				id: id
+			}
+		});
+	};
+
+	//接受二维码传过来的值，并且显示到页面上面
+	function getQrCodeValue(meterId, key) {
+		console.log(meterId + ';' + key);
+		$("#meterId").prop("disabled", "disabled").val(meterId);
+		$("#meterKey").prop("disabled", "disabled").val(key);
+
+		getLocationByParentId(); //获取省市列表
+		showModdle();
+	}
+
+	//取消输入框不能输入状态
+	function cancelDisabled() {
+		getLocationByParentId(); //获取省市列表
+		$("#meterId").removeAttr("disabled").val("");
+		$("#meterKey").removeAttr("disabled").val("");
+	}
+
+	function back() {
+		api.closeWin({});
+	};
+	//打开二维码
+	function openQrCodeWin() {
+		api.openWin({
+			name: 'scannerAddMeter',
+			url: 'scannerAddMeter.html'
+		});
+	}
+
+	//关闭摸态框
+	function closeModdle() {
+		$("#moddle").css("display", "none");
+	};
+
+	//搜索条函数
+	function doSearch() {
+		$api.addCls($api.dom(".aui-searchbar-wrap"), "focus");
+		$api.dom('.aui-searchbar-input input').focus();
+	};
+
+	function cancelSearch() {
+		$api.removeCls($api.dom(".aui-searchbar-wrap.focus"), "focus");
+		$api.val($api.byId("search-input"), '');
+		$api.dom('.aui-searchbar-input input').blur();
+		$("#lists").html("");
+		getMeterList();
+	};
+
+	function clearInput() {
+		$api.val($api.byId("search-input"), '');
+	};
+	//搜索的内容
+	function getMsg(dom) {
+		$("#lists").html("");
+		listPage = 1;
+		getMeterList();
+		$("#lists").html("");
+	};
+	$("#province").change(function() {
+		var id;
+		id = $("#province option:selected").attr("aptionAttr");
+		getLocationByParentId(id);
+	});
+
+	$("#city").change(function() {
+		provinceid = $("#province option:selected").attr("aptionAttr");
+		cityid = $("#city option:selected").attr("aptionAttr");
+		console.log(provinceid + '...' + cityid);
+		$.ajax({
+			type: "get",
+			url: HEADER + "app/meter/check_getLadderPriceProgramList.do",
+			data: {
+				province_id: provinceid,
+				city_id: cityid
+			},
+			success: function(data) {
+				if (data.code == 1) {
+					constructLadderPriceProgramList(data.data);
+				}
+			},
+			error: function(ret) {
+				console.log(JSON.stringify(ret));
+			}
+		});
+
+		$.ajax({
+			type: "get",
+			url: HEADER + "app/meter/check_getPeakLevelValleyProgramList.do",
+			data: {
+				province_id: provinceid,
+				city_id: cityid
+			},
+			success: function(data) {
+				console.log("88888888");
+				if (data.code == 1) {
+					constructPeakLevelValleyProgramList(data.data);
+				}
+			},
+			error: function(ret) {
+				console.log(JSON.stringify(ret));
+			}
+		});
+	});
+
+
+	function constructLadderPriceProgramList(data) {
+		var str = '<option value="" disabled>请选择</option>';
+		for (var i = 0; i < data.length; i++) {
+			str += '<option user_id="' + data[i].user_id + '" province_id="' + data[i].province_id + '" city_id="' + data[i].city_id + '" id="' + data[i].id + '">' + data[i].name + '</option>';
+		}
+		$("#lp_id").html(str);
+	}
+
+	//打开模态框
+	function showModdle() {
+		// $("#meterKey").val('');
+		// $("#meterId").val('');
+		$("#name").val('');
+		$("#ele_price").val('');
+		$("#initval").val('');
+		$("#province option:first-of-type,#city option:first-of-type").prop("selected", true);
+		$("#lp_id option:first-of-type,#plv_id option:first-of-type").prop("selected", true);
+		$("#moddle").css("display", "block");
+	};
+
+	function constructPeakLevelValleyProgramList(data) {
+		var str = '<option value="" disabled>请选择</option>';
+		for (var i = 0; i < data.length; i++) {
+			str += '<option user_id="' + data[i].user_id + '" province_id="' + data[i].province_id + '" city_id="' + data[i].city_id + '" id="' + data[i].id + '">' + data[i].name + '</option>';
+		}
+		$("#plv_id").html(str);
+	}
+</script>
+
+</html>

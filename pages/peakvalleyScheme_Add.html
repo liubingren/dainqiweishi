@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>添加峰平谷方案</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+
+    <style>
+        html,
+        body {
+            background: white;
+            height: 80%;
+        }
+
+        p {
+            heigth: 1.3rem;
+            line-height: 1.3rem;
+            padding-top: 0.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: #484848;
+        }
+
+        .blue_line {
+            width: 4%;
+            margin-left: 48%;
+            height: 2px;
+            background: #007ac6;
+        }
+
+        .formBox .aui-row {
+            width: 70%;
+            margin: 0.7rem 15%;
+            height: 2rem;
+            line-height: 2rem;
+        }
+
+        input[type='text'] {
+            /*border: #007ac6 solid 1px;*/
+            border: #484848 solid 1px;
+            border-radius: 5px;
+            height: 1.2rem;
+            line-height: 1.2rem;
+            min-height: 2rem;
+            font-size: 0.8rem;
+            padding-left: 0.5rem;
+        }
+
+        .submitAddBtn {
+            height: 1.8rem;
+            line-height: 1.8rem;
+            width: 30%;
+            margin: 1rem 35%;
+            text-align: center;
+            background: linear-gradient(#9ed8f6, #007ac6);
+            border-radius: 3px;
+            color: white;
+        }
+
+        .aui-title-blue {
+            color: #007ac6;
+        }
+
+        .aui-title-blue span {
+            color: red;
+        }
+
+        #province+.icon_down {
+            float: left;
+            position: relative;
+            top: -2rem;
+            left: 82%;
+            color: black;
+            font-size: 0.7rem;
+            background: url('../image/meters/icon_down.png') no-repeat;
+            background-size: 90%;
+            background-position: 0 0.75rem;
+            /*border: red solid 1px;*/
+            width: 0.8rem;
+            opacity: 0.9;
+        }
+
+        #city+.icon_down {
+            float: left;
+            position: relative;
+            top: -2rem;
+            left: 82%;
+            color: black;
+            font-size: 0.7rem;
+            background: url('../image/meters/icon_down.png') no-repeat;
+            background-size: 90%;
+            background-position: 0 0.75rem;
+            /*border: red solid 1px;*/
+            width: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .timeSelector {
+            border: #484848 solid 1px;
+            width: 100%;
+            height: 2rem;
+            line-height: 2rem;
+            border-radius: 5px;
+            padding-left: 0.5rem
+        }
+
+        .closeBtn {
+            text-align: right;
+            margin-top: 100px;
+            border-top: #eee solid 1px;
+            height: 2rem;
+            line-height: 2rem;
+            width: 100%;
+            position: fixed;
+            bottom: 260px;
+            right: 0;
+            color: #787878;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav">
+        <div class="aui-pull-left aui-btn" onclick="turnBack()" tapmode>
+            <span class="aui-iconfont aui-icon-left"></span>
+        </div>
+        <div class="aui-title" id="title">峰平谷方案</div>
+    </header>
+    <div class="aui-content">
+        <p>新增峰平谷方案</p>
+        <div class="blue_line"> </div>
+        <div class="formBox">
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>开始时段</div>
+                <div class="aui-col-xs-8">
+                    <div class="timeSelector" id="startTime"></div>
+                    <!-- <input type="text" id="startTime" onclick="openTimeselector('startTime')" onchange="checkwhichismax()" onblur="closeTimeselector()" /> -->
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>结束时段</div>
+                <div class="aui-col-xs-8">
+                    <div class="timeSelector" id="endTime" tapmode onclick="openTimeselector('endTime')"></div>
+                    <!-- <input type="text" id="endTime" onclick="openTimeselector('endTime')" onchange="checkwhichismax()" onblur="closeTimeselector()" /> -->
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>价格</div>
+                <div class="aui-col-xs-8">
+                    <input type="text" id="price" onchange="checkInteger(this)" onfocus="closeTimeselector()" />
+                </div>
+            </div>
+        </div>
+        <div class="submitAddBtn" tapmode onclick="submitAdd()">新增</div>
+    </div>
+    <div class="closeBtn" tapmode onclick="closeTimeselector()">完成</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+
+<script type="text/javascript">
+    var timeSelector
+    var toast
+    apiready = function() {
+        api.parseTapmode()
+        toast = new auiToast();
+        var name = api.pageParam.name
+        $("#title").html(name)
+        var startTime = api.pageParam.startTime
+        console.log("startTime:"+startTime);
+        if (startTime == undefined || startTime == "undefined") {
+            $("#startTime").html("")
+            $api.addEvt($api.byId('startTime'), 'click', function() {
+                openTimeselector('startTime')
+            });
+        } else {
+            $("#startTime").html(startTime);
+            $("#startTime").css("border","#787878 solid 1px")
+        }
+        timeSelector = api.require('timeSelector');
+    };
+
+    function submitAdd() {
+        var id = api.pageParam.id
+        var startT = $("#startTime").html()
+        var endT = $("#endTime").html()
+        var price = $("#price").val()
+        console.log(id + "+" + startT + "+" + endT + "+" + price);
+        if (!startT || !endT || !price) {
+            alert("带“*”项必须选择或填写，不能为空！")
+        } else {
+            var url = HEADER + 'app/peakLevelValley/add_addPeakLevelValley.do'
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {
+                    "p_id": id,
+                    "starttime": startT,
+                    "endtime": endT,
+                    "price": price
+                },
+                success: function(data) {
+                    console.log(JSON.stringify(data));
+                    if (data.code == 1) {
+                        // 刷新详情页数据
+                        api.sendEvent({
+                            name: 'refreshPage'
+                        });
+                        refreshPage()
+                        toast.success({
+                            title: "新增成功",
+                            duration: 2000
+                        });
+                    } else {
+                        toast.fail({
+                            title: data.msg,
+                            duration: 3000
+                        });
+                    }
+                }
+            })
+        }
+    }
+
+    // 打开时间选择器
+    function openTimeselector(dom) {
+        console.log("进来了？");
+        timeSelector.close();
+        setTimeout(function() {
+            $(".closeBtn").css("display", "block")
+            $("#" + dom).html("00:00")
+            timeSelector.open({
+                x: 0,
+                y: api.frameHeight - 260,
+                width: api.frameWidth,
+                height: 260,
+                fixedOn: api.frameName
+            }, function(ret, err) {
+                console.log(JSON.stringify(ret));
+                var el = $api.byId(dom);
+                var hour = ""
+                var minute = ""
+                if (ret.hour < 10) {
+                    hour = "0" + ret.hour
+                } else {
+                    hour = ret.hour
+                }
+                if (ret.minute < 10) {
+                    minute = "0" + ret.minute
+                } else {
+                    minute = ret.minute
+                }
+                var value = hour + ":" + minute
+                console.log(value);
+                $api.html(el, value);
+            });
+        }, 300)
+    }
+
+    // 关闭时间选择器
+    function closeTimeselector() {
+        $(".closeBtn").css("display", "none")
+        timeSelector.close();
+    }
+
+
+    // 刷新页面
+    function refreshPage() {
+        var startTime = $api.getStorage('startTime');
+        $("#startTime").html(startTime)
+        $("#endTime").html("")
+        $("#price").val("")
+    }
+
+    // // 比较开始时间和结束时间
+    // function checkwhichismax(dom) {
+    //     var html1 = $("#startTime").html()
+    //     var html2 = $("#endTime").html()
+    //     if (html1 && html2) {
+    //         var startArr = html1.split(":")
+    //         var endArr = html2.split(":")
+    //         if (startArr[0] == endArr[0]) {
+    //             if (startArr[1] >= endArr[1]) {
+    //                 alert("开始时段必须小于结束时段")
+    //             }
+    //         } else if (startArr[0] > endArr[0]) {
+    //             alert("开始时段必须小于结束时段")
+    //         }
+    //     }
+    // }
+</script>
+
+</html>

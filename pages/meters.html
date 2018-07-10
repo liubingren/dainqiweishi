@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no">
+    <title>电表分组</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+
+    <style>
+        html,
+        body {
+            background: white
+        }
+
+        p {
+            heigth: 1.3rem;
+            line-height: 1.3rem;
+            padding-top: 0.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: #484848;
+        }
+
+        .blue_line {
+            width: 4%;
+            margin-left: 48%;
+            height: 2px;
+            background: #007ac6;
+        }
+
+        .formBox {
+            padding-top: 0.7rem;
+        }
+
+        .formBox .aui-row {
+            width: 70%;
+            margin: 0.5rem 15%;
+            height: 2rem;
+            line-height: 2rem;
+        }
+
+        #search-input {
+            border: none;
+            position: relative;
+            top: 0.2rem
+        }
+
+        input[type='text'] {
+            /*border: #007ac6 solid 1px;*/
+            border: #484848 solid 1px;
+            border-radius: 5px;
+            height: 1.1rem;
+            line-height: 1.1rem;
+            min-height: 1.9rem;
+            font-size: 0.7rem;
+            padding-left: 0.25rem;
+        }
+
+        .submitEditBtn {
+            height: 1.9rem;
+            line-height: 1.9rem;
+            width: 30%;
+            margin: 1rem 35%;
+            text-align: center;
+            background: linear-gradient(#9ed8f6, #007ac6);
+            border-radius: 3px;
+            color: white;
+        }
+
+        .aui-title-blue {
+            color: #007ac6;
+            text-align: right;
+            padding-right: 0.5rem;
+        }
+
+        .aui-title-blue span {
+            color: red
+        }
+
+        .selector {
+            border: #484848 solid 1px;
+            height: 1.1rem;
+            line-height: 1.1rem;
+            border-radius: 5px;
+            min-height: 1.9rem;
+            padding-left: 0.25rem;
+            color: #484848
+        }
+
+        #province {
+            width: 110%;
+            /*margin-right: 5%;*/
+            padding: 0 0.9rem 0 0.25rem;
+            /*overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;*/
+        }
+
+        #city {
+            width: 90%;
+            margin-left: 10%;
+            padding: 0 1.15rem 0 0.25rem;
+            overflow: hidden;
+            /*text-overflow: ellipsis;
+            white-space: nowrap;*/
+        }
+
+        .icon_down {
+            height: 1.9rem;
+            line-height: 1.9rem;
+            width: 0.8rem;
+            float: left;
+            position: relative;
+            color: black;
+            font-size: 0.7rem;
+            background: url('../image/meters/icon_down.png') no-repeat;
+            background-size: 90%;
+            opacity: 0.9;
+        }
+
+        #province+.icon_down {
+            top: -2rem;
+            left: 82%;
+            background-position: 0 0.75rem;
+            /*border: red solid 1px;*/
+        }
+
+        #city+.icon_down {
+            top: -2rem;
+            left: 82%;
+            background-position: 0 0.75rem;
+        }
+
+        .selector+.icon_down {
+            top: -2rem;
+            left: 88%;
+            background-position: 0 0.75rem;
+        }
+
+        .unit {
+            height: 1.9rem;
+            line-height: 1.9rem;
+            width: 2.2rem;
+            float: left;
+            position: relative;
+            color: #484848;
+            font-size: 0.6rem;
+            top: -1.9rem;
+            left: 48%;
+            text-align: right;
+        }
+
+        .blue-color {
+            color: #007ac6
+        }
+
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav">
+        <div class="aui-pull-left aui-btn" onclick="turnBack()" tapmode>
+            <span class="aui-iconfont aui-icon-left"></span>
+        </div>
+        <div class="aui-title">电表分组</div>
+        <div class="aui-pull-right" onclick="openFramepage('1','','')" tapmode>
+            <span>添加&nbsp;&nbsp;</span>
+        </div>
+    </header>
+    <div class="aui-content">
+        <div class="aui-searchbar-wrap" id="search" style="clear:left;">
+            <div class="aui-searchbar aui-border-radius" tapmode onclick="doSearch(this);" style="width:95%;border-radius:15px">
+                <i class="aui-iconfont aui-icon-search"></i>
+                <div class="aui-searchbar-text">
+                    请输入搜索内容
+                </div>
+                <div class="aui-searchbar-input">
+                    <input type="text" placeholder="请输入分组名称" id="search-input">
+                </div>
+                <i class="aui-iconfont aui-icon-close" tapmode onclick="clearInput()"></i>
+            </div>
+            <div class="aui-searchbar-cancel" tapmode onclick="cancelSearch()" style="color:#888">取消</div>
+            <div class="aui-searchbar-cancel" tapmode onclick="getMsg(this);" style="color:#888">确定</div>
+        </div>
+        <ul class="aui-list aui-list-in" id="list" style="text-align:center">
+            <!-- <li class="aui-list-item" tapmode onclick="intoRankList(this)">
+                <div class="aui-list-item-label-icon">
+                    <input type="checkbox" onchange="singleSelection()" />
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    御龙华庭
+                </div>
+            </li>
+            <li class="aui-list-item" tapmode onclick="intoRankList(this)">
+                <div class="aui-list-item-label-icon">
+                    <input type="checkbox" onchange="singleSelection()" />
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    御龙华庭
+                </div>
+            </li> -->
+        </ul>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+
+<script type="text/javascript">
+    var toast
+    var UIListView
+    var param = ""
+    apiready = function() {
+        api.parseTapmode()
+        UIListView = api.require('UIListView');
+        toast = new auiToast();
+        getGroupMsg()
+        api.addEventListener({
+            name: 'getGroupMsg'
+        }, function(ret, err) {
+            param = ""
+            getGroupMsg()
+        });
+        api.addEventListener({
+            name: 'isLogined'
+        }, function(ret, err) {
+            param = ""
+            getGroupMsg()
+        });
+    };
+
+    // 获取分组列表信息
+    function getGroupMsg() {
+        var url = HEADER + 'app/meter/check_getUserAllGroup.do'
+        $.ajax({
+            type: 'get',
+            url: url,
+            data: {
+                "name": param
+            },
+            success: function(data) {
+                // console.log("分组" + JSON.stringify(data));
+                UIListView.close();
+                if (data.code === 1 && data.data != null) {
+                    var html = ""
+                    var jsonArr = data.data
+                    var list = []
+                    for (var i = 0; i < jsonArr.length; i++) {
+                        var title = "  "+jsonArr[i].group_name + ' [' + ((jsonArr[i].online_num != null) ? jsonArr[i].online_num : 0) + '/' + ((jsonArr[i].counts != null) ? jsonArr[i].online_num : 0) + ']'
+                        // console.log(title);
+                        list.push({
+                            "uid": jsonArr[i].id,
+                            // "imgPath": '',
+                            "title": title,
+                            "remark": '查看',
+                            "icon": 'widget://image/setting/icon_right2.png'
+                        })
+                    }
+                    loadList(list)
+                }
+            },
+            error: function(err) {
+                $("#list").html("请求失败，请检查网络！")
+            }
+        })
+    }
+
+    // 加载list
+    function loadList(list) {
+        UIListView.open({
+            rect: {
+                x: 0,
+                y: 127,
+                w: api.winWidth,
+                h: api.frameHeight-128
+            },
+            data: list,
+            rightBtns: [{
+                bgColor: '#fff',
+                activeBgColor: '',
+                width: 70,
+                title: '修改',
+                titleSize: 12,
+                titleColor: '#007ac6',
+                icon: 'widget://image/meters/icon_edit_blue.png',
+                iconWidth: 15
+            }, {
+                bgColor: '#fff',
+                activeBgColor: '',
+                width: 70,
+                title: '删除',
+                titleSize: 12,
+                titleColor: '#007ac6',
+                icon: 'widget://image/meters/icon_delete_blue.png',
+                iconWidth: 15
+            }],
+            styles: {
+                borderColor: '#eee',
+                item: {
+                    bgColor: '#fff',
+                    activeBgColor: '#F5F5F5',
+                    height: 55.0,
+                    // imgWidth: 20,
+                    // imgHeight: 20,
+                    imgCorner: 4,
+                    placeholderImg: '',
+                    titleSize: 15.0,
+                    titleColor: '#484848',
+                    remarkColor: '#787878',
+                    remarkSize: 12,
+                    remarkIconWidth: 30
+                }
+            },
+            fixedOn: api.frameName
+        }, function(ret, err) {
+            if (ret) {
+                var json1 = ret
+                    // console.log("json1" + JSON.stringify(json1));
+                if (ret.eventType != "show") {
+                    UIListView.getDataByIndex({
+                        index: ret.index
+                    }, function(ret, err) {
+                        if (ret) {
+                            var json2 = ret
+                                // console.log("json2：" + JSON.stringify(json2));
+                            var id = json2.data.uid
+                            var name = json2.data.title
+                            var group_name = name.split(" ")
+                                // console.log("分组id:" + id);
+                                // console.log("分组名："+json2.data.title);
+                                // console.log(">>>>"+group_name);
+                            if (json1.eventType == "clickRemark" ||json1.eventType == "clickContent") {
+                                // 进入分组
+                                intoMeterList(id, group_name[2])
+                            } else if (json1.eventType == "clickRightBtn") {
+                                // console.log(json1.btnIndex);
+                                if (json1.btnIndex == 0) {
+                                    //编辑
+                                    openFramepage('2', group_name[0], id)
+                                        // editgroupname(id,name)
+                                } else if (json1.btnIndex == 1) {
+                                    //删除
+                                    deletegroup(id)
+                                }
+                            }
+                        }
+                    });
+                }
+            } else {
+                console.log(JSON.stringify(err));
+            }
+        });
+    }
+
+    // 删除分组
+    function deletegroup(id) {
+        var url = HEADER + 'app/meterGroup/delete_deleteMeterGroup.do'
+        $.ajax({
+            type: 'post',
+            url: url,
+            data: {
+                "id": id
+            },
+            success: function(data) {
+                // console.log(JSON.stringify(data));
+                if (data.code === 1) {
+                    toast.success({
+                        title: "已删除！",
+                        duration: 2000
+                    });
+                    getGroupMsg()
+                } else {
+                    toast.fail({
+                        title: data.msg,
+                        duration: 2000
+                    });
+                }
+            },
+            error: function(err) {
+                alert("请求失败，请检查网络！")
+            }
+        })
+    }
+
+    // 点击分组进入电表列表
+    function intoMeterList(id, name) {
+        // console.log("分组名：" + name);
+        api.openWin({
+            name: 'metersList',
+            url: './metersList.html',
+            pageParam: {
+                id: id,
+                name: name
+            }
+        });
+    }
+
+    // 打开编辑
+    function openFramepage(type, name, id) {
+        // console.log(type + " ++ " + name + " ++ " + id);
+        api.openFrame({
+            name: 'framePage',
+            url: './framePage.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: api.winWidth,
+                h: api.winHeight
+            },
+            pageParam: {
+                type: type,
+                name: name,
+                group_id: id
+            },
+            bounces: true,
+            bgColor: 'rgba(0,0,0,0)',
+            vScrollBarEnabled: true,
+            hScrollBarEnabled: true
+        });
+    }
+
+    //上拉刷新
+    function refreshLoading() {
+        //上拉刷新
+        api.setRefreshHeaderInfo({
+            visible: true,
+            loadingImg: 'widget://image/refresh.png',
+            bgColor: '#ccc',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function(ret, err) {
+            getGroupMsg(); //重新加载第一页内容
+            api.refreshHeaderLoadDone(); //通知顶部下拉刷新数据加载完毕，组件会恢复到默认状态
+        });
+    }
+
+    /*****************   搜   索    功    能    ******************/
+
+    //搜索条函数
+    function doSearch() {
+        $api.addCls($api.dom(".aui-searchbar-wrap"), "focus");
+        $api.dom('.aui-searchbar-input input').focus();
+    }
+
+    //取消搜索
+    function cancelSearch() {
+        $api.removeCls($api.dom(".aui-searchbar-wrap.focus"), "focus");
+        $api.val($api.byId("search-input"), '');
+        $api.dom('.aui-searchbar-input input').blur();
+        $("#list").html("");
+        param = ""; //取消搜索时清除param的值
+        getGroupMsg();
+    }
+
+    //清空搜索内容
+    function clearInput() {
+        $api.val($api.byId("search-input"), '');
+    }
+
+    //搜索的内容
+    function getMsg(dom) {
+        param = $("#search-input").val(); //小区名称
+        UIListView.close();
+        getGroupMsg(param);
+    };
+</script>
+
+</html>

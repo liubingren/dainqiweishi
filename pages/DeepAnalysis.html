@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>深度分析</title>
+	<link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+	<style>
+		body {
+			background-color: white;
+		}
+
+		header {
+			position: fixed;
+		}
+
+		.content {
+			width: 100%;
+			height: 88%;
+			background: #fff;
+			position: absolute;
+			top: 12%;
+			left: 0;
+			padding: 2%;
+		}
+
+		.content div input {
+			min-height: 0;
+			font-size: 16px;
+			height: 26px;
+			line-height: 26px;
+			width: 60%;
+			border: 1px solid #eee;
+		}
+
+		.main {
+			width: 100%;
+			/*height: 370px;*/
+			height: 50%;
+			margin-top: 15px;
+			display: none;
+		}
+
+		#energycosts-bar,
+		#electricityAnalysis-bar {
+			width: 100%;
+			height: 15rem;
+			margin-top: 8px;
+			display: none;
+		}
+
+		#line {
+			height: 380px;
+			width: 100%;
+		}
+
+		.vertToHori,
+		#feedback {
+			display: none;
+		}
+
+		.table {
+			width: 100%;
+			text-align: center;
+			border: 1px solid #eee;
+			font-size: 13px;
+		}
+
+		.table tr td {
+			border-color: #fff;
+		}
+
+		.table thead {
+			background: #9bbb59;
+		}
+
+		.table tbody tr {
+			background: #dee7d1;
+		}
+
+		.table tbody tr:nth-child(2n-1) {
+			background: #eff3ea;
+		}
+
+		.center {
+			text-align: center;
+		}
+
+		.marginTop {
+			margin-top: -5px;
+		}
+
+		#moddle {
+			display: none;
+		}
+
+		.moddle_md {
+			width: 100%;
+			height: 700px;
+			background: #000;
+			opacity: 0.25;
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 10000000;
+		}
+
+		.mod_content {
+			width: 80%;
+			/*height:43.4%;*/
+			position: fixed;
+			top: 30%;
+			left: 10%;
+			/*padding-bottom:10%*/
+			z-index: 10000001;
+			background: #eee;
+			border-radius: 8px;
+		}
+
+		.mod_content h3 {
+			text-align: center;
+			font-size: 20px;
+			height: 45px;
+			line-height: 55px;
+			font-weight: 700;
+			padding-right: 5%;
+		}
+
+		.mod_content .lineDiv {
+			margin-top: 10px;
+		}
+
+		.mod_content .lineDiv span {
+			margin: 4px 0 0 5%;
+			text-align: right;
+			/*width:80px;*/
+			width: 25%;
+			display: block;
+		}
+
+		#selectLine,
+		#selectTab {
+			font-size: 15px;
+			padding: 5px 10px;
+			min-height: 0;
+			width: 60%;
+			margin: 0;
+			border: #ccc solid 1px;
+			background-color: white;
+		}
+
+		#btnBox {
+			font-size: 15px;
+			padding: 5px 10px;
+			min-height: 0;
+			width: 60%;
+			margin: 0;
+			border: #ccc solid 1px;
+			/*margin-left: 33%;*/
+			float: left;
+		}
+
+		#selectTime {
+			display: none;
+			clear: left;
+		}
+
+		#selectTime div {
+			width: 100%;
+			padding-left: 10%;
+		}
+		/*.lastDiv {
+			margin: 0;
+			padding: 0;
+			width: 100%
+		}*/
+
+		.lastDiv span {
+			display: inline-block;
+			width: 50%;
+			float: left;
+			text-align: center;
+			height: 45px;
+			line-height: 45px;
+			border-top: 1px solid #aaa;
+			color: #0894EC;
+			font-size: 20px;
+			background: #e9eaee;
+		}
+
+		.lastDiv span:first-of-type {
+			border-right: 1px solid #aaa;
+			margin: 10px 0 0 0px;
+			border-radius: 0 0 0 10px;
+		}
+
+		.lastDiv span:last-of-type {
+			margin: 10px 0 0 0px;
+			border-radius: 0 0 10px 0;
+		}
+
+		.content>div:not(:first-of-type) {
+			margin-top: 0.2rem;
+		}
+		.content div input[type="checkbox"] {
+			width: 26px;
+		}
+    .content div label{
+      margin-right: 5px;
+    }
+		#line {
+			display: none;
+		}
+
+		.inputType2 {
+			display: none;
+		}
+		#chooseLine{
+			padding: 0px 20px;
+		}
+		#chooseLine div{
+			display: inline-block;
+			width: 30%;
+			margin-top: 5px;
+		}
+		#chooseLine div.title{
+			width: 100%;
+			margin-top: 0px;
+		}
+		#chooseLine label{
+			margin-right: 6px;
+		}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav" style="padding-top:25px;background:#31aafb;">
+		<a class="aui-pull-left" tapmode onclick="back();">
+			<span class="aui-iconfont aui-icon-left" style="font-size:20px;"></span>
+		</a>
+		<div class="aui-title">设备深度分析</div>
+		<!-- <span id="feedback" class="aui-pull-right" tapmode onclick="openModdle()">反馈</span> -->
+	</header>
+	<div class="content" style="">
+		<div>
+			<span class="aui-pull-left"><span class="allEquineType"></span>电表编号：</span>
+			<span class="aui-pull-left" id="meterId"></span>
+			<div class="aui-clearfix"></div>
+		</div>
+		<!-- <div>
+			<span class="aui-pull-left">安装位置：</span>
+			<span id="address"></span>
+			<div class="aui-clearfix"></div>
+		</div> -->
+		<div class="inputType1">
+			<span class="aui-pull-left">分析日期：</span>
+			<input class="aui-pull-left" type="date" id="analysisDate" />
+			<span style="margin-left:0.2rem;" class="inputText">至</span>
+			<div class="aui-clearfix"></div>
+		</div>
+		<div class="inputType1">
+			<span class="aui-pull-left" style="display:inline-block;width:4rem;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			<input class="aui-pull-left" type="date" id="enddate" />
+			<span class="aui-btn aui-btn-info aui-pull-right marginTop" data-time="0" tapmode onclick="getMsg(1);">确认</span>
+			<div class="aui-clearfix"></div>
+		</div>
+		<div class="inputType2">
+			<span class="aui-pull-left">分析日期：</span>
+			<input class="aui-pull-left" type="date" id="analysisDate-1" />
+			<span class="aui-btn aui-btn-info aui-pull-right marginTop" data-time="0" tapmode onclick="getMsg(1);">确认</span>
+			<div class="aui-clearfix"></div>
+		</div>
+		<div class="aui-tab" id="tab">
+			<div class="aui-tab-item aui-active" index="1" tapmode>电费分解</div>
+			<div class="aui-tab-item" index="2" tapmode>能耗分解</div>
+			<div class="aui-tab-item" index="3" tapmode>用电曲线</div>
+			<div class="aui-tab-item" index="4" tapmode>电费分析</div>
+		</div>
+		<div id="tabBox">
+			<!--电费分解-->
+			<div class="main" id="main" style="overflow:hidden;position:relative">
+				<div style="position:absolute;top:0;right:0;">单价(元)</div>
+				<div>总电费:</div>
+			</div>
+			<!--能耗分解-->
+			<div class="main" id="table">
+				<p id="showMonth">本月电器用电量</p>
+				<table class="table">
+					<thead>
+						<tr>
+							<td style="width:55%">项目类型</td>
+							<td style="width:15%">用时(小时)</td>
+							<td style="width:15%">耗电量(Kwh)</td>
+							<td style="width:15%">排名</td>
+						</tr>
+					</thead>
+					<tbody id="energyMsg"></tbody>
+				</table>
+			</div>
+			<!-- 能耗分解柱状图    -->
+			<div id='energycosts-bar' class="main">
+
+			</div>
+			<!--用电折线图-->
+			<!-- <div class="aui-pull-right vertToHori aui-btn aui-btn-primary aui-btn-sm" tapmode onclick="openShowLineHori()">横屏</div> -->
+			<div style="display: none;" id="chooseLine">
+
+			</div>
+			<div class="main" id="line" style="overflow:auto;position: relative;">
+
+			</div>
+			<div id="moddle">
+				<div class="moddle_md"></div>
+				<div class="mod_content">
+					<h3>用电反馈</h3>
+					<div class="lineDiv">
+						<span style="float:left">电器类型:</span>
+						<select name="selectLine" id="selectLine">
+						</select>
+					</div>
+					<div class="lineDiv">
+						<span style="float:left">电器标签:</span>
+						<select name="selectTab" id="selectTab">
+						</select>
+					</div>
+					<div class="lastDiv">
+						<span onclick="closeModdle();" class="btn1" tapmode>取消</span>
+						<span onclick="submit();" class="btn2" tapmode>提交</span>
+					</div>
+				</div>
+			</div>
+			<!--电费分析-->
+			<div class="main" id="billTable" style="overflow:auto;display: none;">
+				<div>总用电量:<span id="totalEle"></span>(kwH)</div>
+				<!-- <p>睡眠建议</p> -->
+				<table class="table" style="margin-top:5px;">
+					<thead>
+						<tr>
+							<td>计价方式</td>
+							<td>本月预估电费(元)</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>阶梯计价</td>
+							<td id="ladder_price_money"></td>
+						</tr>
+						<tr>
+							<td>峰平谷计价</td>
+							<td id="peak_level_valley_money"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- 电费分析柱状图    -->
+			<div id='electricityAnalysis-bar' class="main">
+
+			</div>
+		</div>
+	</div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/aui-tab.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/echarts4.1.0.js"></script>
+
+<script type="text/javascript">
+	var tab = "";
+	var DATA; //表格数据全局变量
+	var globalEledata;
+	var times;
+	var meterId;
+	var flag;
+	apiready = function() {
+		var systemType = api.systemType; //获取系统类型
+		if (systemType == "ios") {
+			$("#main").css({
+				"height": "23rem"
+			});
+		} else if (systemType == "android") {
+			$("#main").css({
+				"height": "400px"
+			});
+		}
+		meterId = api.pageParam.meterId;
+		$("#meterId").html(api.pageParam.mid);
+
+		showTab();
+	};
+
+	//横屏显示
+	function openShowLineHori() {
+		var analysisDate = $("#analysisDate").val(); //分析时间
+		api.openWin({
+			name: 'showLineEchart',
+			url: './showLineEchart.html',
+			pageParam: {
+				analysisDate: analysisDate,
+				meterid: meterId
+			}
+		})
+	}
+
+	//关闭moddle
+	function closeModdle() {
+		$("#moddle").css("display", "none");
+	}
+
+	//显示tab方法
+	function showTab() {
+		tabshow(); //显示隐藏tab
+		var nowTime = calcLastDate(new Date().format("yyyy-MM-dd")); //计算上一天的毫秒数（在cr.js文件）
+		$("#analysisDate").val(nowTime.format("yyyy-MM-dd"));
+		$("#enddate").val(new Date().format("yyyy-MM-dd"));
+		$("#analysisDate-1").val(new Date().format("yyyy-MM-dd"));
+	}
+
+	function tabshow(index) {
+		if (!index) { //当没点击时index为1则显示饼状图
+			index = 1;
+			flag = 1;
+			showTabContent(index,flag);
+		}
+		tab = new auiTab({
+			element: document.getElementById("tab"),
+			index: index,
+			repeatClick: false
+		}, function(ret) {
+			var index = ret.index;
+			flag = 0;
+			showTabContent(index,flag);
+		});
+	}
+	// 显示对应tab页 的内容
+	function showTabContent(index, flag) {
+		// console.log(flag);
+		if (flag == 1) {
+			$("#energycosts-bar").css("display", "block");
+			$("#electricityAnalysis-bar").css("display", "block");
+			$("#main").css("display", "block");
+			$("#line").css("display", "block");
+			getMeterBillDetail();
+		} else {
+			$("#energycosts-bar").css("display", "block");
+			$("#electricityAnalysis-bar").css("display", "block");
+			$("#main").css("display", "block");
+			$("#line").css("display", "block");
+			rederEcharts(DATA);
+		}
+		switch (index) {
+			case 1:
+				$("#main").css("display", "block");
+				$("#table").css("display", "none");
+				$("#line").css("display", "none");
+				$(".vertToHori").css("display", "none");
+				$("#feedback").css("display", "none");
+				$("#billTable").css("display", "none");
+				$("#chooseLine").css("display", "none");
+				$("#energycosts-bar").css("display", "none");
+				$("#electricityAnalysis-bar").css("display", "none");
+				$(".inputType1").css("display", "block");
+				$(".inputType2").css("display", "none");
+				break;
+			case 2:
+				$("#main").css("display", "none");
+				$("#table").css("display", "block");
+				$("#line").css("display", "none");
+				$(".vertToHori").css("display", "none");
+				$("#feedback").css("display", "none");
+				$("#billTable").css("display", "none");
+				$("#chooseLine").css("display", "none");
+				$("#energycosts-bar").css("display", "block");
+				$("#electricityAnalysis-bar").css("display", "none");
+				$(".inputType1").css("display", "block");
+				$(".inputType2").css("display", "none");
+				break;
+			case 3:
+				$(".vertToHori").css("margin-top", "0px");
+				$("#main").css("display", "none");
+				$("#table").css("display", "none");
+				$("#line").css("display", "block");
+				$(".vertToHori").css("display", "block");
+				$("#feedback").css("display", "block");
+				$("#billTable").css("display", "none");
+				$("#chooseLine").css("display", "block");
+				$("#energycosts-bar").css("display", "none");
+				$("#electricityAnalysis-bar").css("display", "none");
+				$(".inputType1").css("display", "none");
+				$(".inputType2").css("display", "block");
+				break;
+			case 4:
+				$("#main").css("display", "none");
+				$("#table").css("display", "none");
+				$("#line").css("display", "none");
+				$(".vertToHori").css("display", "none");
+				$("#feedback").css("display", "none");
+				$("#billTable").css("display", "block");
+				$("#chooseLine").css("display", "none");
+				$("#energycosts-bar").css("display", "none");
+				$("#electricityAnalysis-bar").css("display", "block");
+				$(".inputType1").css("display", "block");
+				$(".inputType2").css("display", "none");
+				break;
+		}
+	}
+	//确认，获取数据
+	function getMsg(flag) {
+		/**
+       一定要显示出来，要不然找不到容器，无法渲染
+			**/
+		var tabIndex = $("#tab div.aui-active").attr("index");
+		showTabContent(tabIndex * 1, flag);
+	}
+	//获取电表的详情
+	function getMeterBillDetail() {
+		api.showProgress({
+			style: 'default',
+			animationType: 'fade',
+			title: '正在绘图',
+			text: '请勿点击',
+			modal: false
+		});
+		$.ajax({
+			type: "get",
+			url: HEADER + "app/meter/check_getMeterBillDetail.do",
+			data: {
+				meter_id: meterId || '123',
+				begindate: $("#analysisDate").val(),
+				enddate: $("#enddate").val(),
+				date: $("#analysisDate-1").val()
+			},
+			success: function(data) {
+				console.log(JSON.stringify(data));
+				if (data.code == 1) {
+					DATA = data.data;
+					if (DATA == null) {
+						api.hideProgress();
+						api.alert({
+							title: '提示信息',
+							msg: "暂无数据!",
+						});
+					} else {
+						rederEcharts(DATA);
+						setTimeout(function() {
+							api.hideProgress();
+						}, 500);
+					}
+				}
+			},
+			error: function(ret) {
+				api.hideProgress();
+				api.alert({
+					title: '提示信息',
+					msg: "网络错误!",
+				});
+			}
+		})
+	}
+
+	// 渲染echarts图
+	function rederEcharts(data) {
+		//用电曲线
+		var electricity_curve = data.electricity_curve;
+		times = electricity_curve.times;
+		var colorArr = ['#eb1679', '#c78419', '#c7191a', '#19c718', '#1984c8', '#8419c7', '#3419ca', '#c41bb6', '#eb16f9', '#c784f9', '#c719f9', '#19c7f9', '#1984f9', '#8419f9', '#3419f9', '#c41bf9'];
+		var eledata = [];
+		var eleStr = '<div class="title">请选择以下的类型显示曲线(最多显示5条):</div>';
+		for (var k = 0; k < electricity_curve.data.length; k++) {
+			eleStr += '<div><input type="checkbox" class="aui-checkbox" id="' + (k + 1) + '" onclick="chooseItem()"><label for="' + (k + 1) + '">' + electricity_curve.data[k].name + '</label></div>';
+			// var color=colorArr[k+2]
+			eledata.push({
+				name: electricity_curve.data[k].name,
+				type: 'line',
+				stack: '总量',
+				data: electricity_curve.data[k].data,
+				itemStyle: {
+					normal: {
+						lineStyle: {
+							color: getRandomColor()
+						}
+					}
+				}
+			});
+
+		}
+		$("#chooseLine").html(eleStr);
+		globalEledata = eledata;
+		showLineEcharts("line", "破烂折线图", globalEledata, times, "", "", []);
+
+		// 电费分解
+		var dataName = [];
+		var total = 0;
+		var electricityCosts = data.electricity_costs;
+		for (var i = 0; i < electricityCosts.length; i++) {
+			dataName.push(electricityCosts[i].name);
+			total += electricityCosts[i].value;
+		}
+		drawEchartsCircle("main", '', dataName, electricityCosts, ['50%', '50%'], "horizontal", '', total); //画饼状图
+
+		// 能耗分解
+		var energyCosts = data.energy_costs;
+		var str = '';
+		var usews = [];
+		var names = [];
+		for (var j = 0; j < energyCosts.length; j++) {
+			//项目名  用电量    电费   排名
+			str += "<tr>" +
+				"	<td>" + energyCosts[j].name + "</td>" +
+				"	<td>" + energyCosts[j].time + "</td>" +
+				"	<td>" + energyCosts[j].usew + "</td>" +
+				"	<td>" + (j + 1) + "</td>" +
+				"</tr>";
+			names.push(energyCosts[j].name);
+			usews.push(energyCosts[j].usew);
+		}
+		$("#energyMsg").html(str);
+		drawEchartsBar('energycosts-bar', '耗电量(Kwh)', names, usews);
+
+		//电费分析
+		var electricity_analysis = data.electricity_analysis;
+		var xnames = ['阶梯计价', '峰平谷计价'];
+		var yvalues = [];
+		$("#ladder_price_money").html(electricity_analysis.ladder_price_money);
+		$("#peak_level_valley_money").html(electricity_analysis.peak_level_valley_money);
+    $("#totalEle").html(electricity_analysis.total_electricity);
+		yvalues.push(electricity_analysis.ladder_price_money);
+		yvalues.push(electricity_analysis.peak_level_valley_money);
+
+		drawEchartsBar('electricityAnalysis-bar', '本月预估电费(元)', xnames, yvalues);
+	}
+	//饼状图
+	function drawEchartsCircle(dom, title, dataName, data, center, orient, fontSize, total) {
+		if (data.length > 0) {
+			//基于准备好的dom，初始化echarts实例
+			echarts.dispose(document.getElementById(dom));
+			var myChart = echarts.init(document.getElementById(dom));
+			// 指定图表的配置项和数据
+			var option = {
+				legend: {
+					orient: orient,
+					top: '10%',
+					right: '0%',
+					data: dataName,
+					textStyle: {
+						fontSize: fontSize
+					}
+				},
+				tooltip: {
+					trigger: 'item',
+					formatter: '{b}:{c}元({d}%)'
+				},
+				series: [{
+					name: '电费',
+					type: 'pie',
+					radius: '52%',
+					center: center,
+					label: {
+						show: true,
+						position: 'outside',
+						fontSize: 12,
+						formatter: '{b}:\n{c|{c}元}\n{d|{d}%}',
+						rich: {
+							d: {
+								fontSize: 20,
+								fontWeight: '600'
+							},
+							c: {
+								fontSize: 20,
+								fontWeight: '600'
+							}
+						}
+					},
+					labelLine: {
+						show: true,
+						length: 5,
+						smooth: true
+					},
+					data: data,
+					itemStyle: {
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+				}]
+			};
+			// 使用刚指定的配置项和数据显示图表。
+			myChart.setOption(option);
+			$("#" + dom).append('	<div  style="position:absolute;top:0;right:0;">单价(元)</div><div style="position:absolute;top:0;left:0;">总电费:' + total + '(元)</div>');
+		} else {
+			$("#" + dom).html("暂无数据！");
+		}
+	}
+
+
+	//柱状图
+	function drawEchartsBar(dom, title, dataName, data) {
+		if (data.length > 0) {
+			// 基于准备好的dom，初始化echarts实例
+			echarts.dispose(document.getElementById(dom));
+			var myChart = echarts.init(document.getElementById(dom));
+
+			// 指定图表的配置项和数据
+			var option = {
+				color: ['#3398DB'],
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: { // 坐标轴指示器，坐标轴触发有效
+						type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+					}
+				},
+				grid: {
+					left: '3%',
+					right: '4%',
+					bottom: '3%',
+					containLabel: true
+				},
+				xAxis: [{
+					type: 'category',
+					data: dataName,
+					axisTick: {
+						alignWithLabel: true
+					}
+				}],
+				yAxis: [{
+					type: 'value'
+				}],
+				series: [{
+					name: '耗电量(Kwh)',
+					type: 'bar',
+					barWidth: '60%',
+					data: data
+				}]
+			};
+			// 使用刚指定的配置项和数据显示图表。
+			myChart.setOption(option);
+		} else {
+			$("#" + dom).html("暂无数据！");
+		}
+	}
+	//显示用户当天用电曲线（折线图）
+	function showLineEcharts(dom, dataTitle, series, xData, color, gridTop, indexs) {
+		var dataTitle = dataTitle || "破烂折线图";
+		var color = color || "#000";
+		var gridTop = gridTop = gridTop || "60";
+		var xData = xData || times;
+		var series = series || globalEledata;
+
+		var newArr = [];
+		if (indexs && indexs.length >= 1) {
+			for (var i = 0; i < indexs.length; i++) {
+				newArr.push(series[indexs[i]]);
+			}
+			series = newArr;
+		}
+
+		// 基于准备好的dom，初始化echarts实例
+		if (series.length > 0) {
+			echarts.dispose(document.getElementById(dom));
+			var myChart = echarts.init(document.getElementById(dom));
+			// 指定图表的配置项和数据
+			option = {
+				color: color,
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: { // 坐标轴指示器，坐标轴触发有效
+						type: 'line' // 默认为直线，可选为：'line' | 'shadow'|'cross'
+					},
+					position: function(point, params, dom, rect, size) {
+						// 固定在顶部
+						return ["10%", "20%"]; //这是显示的黑色透明提示框左上角与父容器的距离
+					}
+				},
+				legend: {
+					data: dataTitle, //['直接访问','直接访问1']
+				},
+				grid: { //页面中图形的布局
+					top: gridTop,
+					left: '3%',
+					right: '4%',
+					bottom: '12%',
+					containLabel: true //grid 区域是否包含坐标轴的刻度标签。决定的是包括了坐标轴标签在内的所有内容所形成的矩形的位置
+				},
+				xAxis: [{
+					offset: 0,
+					type: 'category',
+					// data: getValue(),
+					data: xData,
+					axisLabel: {
+						margin: 5
+					}
+				}],
+				yAxis: [{
+					type: 'value'
+				}],
+				series: series
+			};
+			// 使用刚指定的配置项和数据显示图表。
+			myChart.setOption(option);
+		}
+	}
+	//用电曲线选择类型
+	function chooseItem() {
+		var s = $("input[type='checkbox']");
+		//改变选中状态
+		var indexs = [];
+		s.each(function(i) {
+			if (this.checked == true) {
+				var index = $(this).attr("id");
+				indexs.push(index * 1 - 1);
+			}
+		});
+		if (indexs.length > 5) {
+			api.alert({
+				title: "提示信息",
+				msg: "最多显示5条!"
+			});
+			return false;
+		}
+		showLineEcharts("line", "破烂折线图", globalEledata, times, "", "", indexs);
+	}
+
+	// 获取随机颜色
+	function getRandomColor() {
+		return '#' +
+			(function(color) {
+				return (color += '0123456789abcdef0123456789abcdef0123456789abcdef' [Math.floor(Math.random() * 48)]) &&
+					(color.length == 6) ? color : arguments.callee(color);
+			})('');
+	}
+	/**
+	 * 精确加法
+	 */
+	function add(num1, num2) {
+		const num1Digits = (num1.toString().split('.')[1] || '').length;
+		const num2Digits = (num2.toString().split('.')[1] || '').length;
+		const baseNum = Math.pow(10, Math.max(num1Digits, num2Digits));
+		return (num1 * baseNum + num2 * baseNum) / baseNum;
+	}
+
+	function back() {
+		api.closeWin();
+	}
+</script>
+
+</html>

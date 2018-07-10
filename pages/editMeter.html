@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no">
+    <title>编辑电表详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+
+    <style>
+        html,
+        body {
+            background: white
+        }
+
+        p {
+            heigth: 1.3rem;
+            line-height: 1.3rem;
+            padding-top: 0.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: #484848;
+        }
+
+        .blue_line {
+            width: 4%;
+            margin-left: 48%;
+            height: 2px;
+            background: #007ac6;
+        }
+
+        .formBox {
+            padding-top: 0.7rem;
+        }
+
+        .formBox .aui-row {
+            width: 70%;
+            margin: 0.5rem 15%;
+            height: 2rem;
+            line-height: 2rem;
+        }
+
+        input[type='text'],input[type='number'] {
+            /*border: #007ac6 solid 1px;*/
+            border: #484848 solid 1px;
+            border-radius: 5px;
+            height: 1.1rem;
+            line-height: 1.1rem;
+            min-height: 1.9rem;
+            font-size: 0.7rem;
+            padding-left: 0.25rem;
+        }
+
+        .submitEditBtn {
+            height: 1.9rem;
+            line-height: 1.9rem;
+            width: 30%;
+            margin: 1rem 35%;
+            text-align: center;
+            background: linear-gradient(#9ed8f6, #007ac6);
+            border-radius: 3px;
+            color: white;
+        }
+
+        .aui-title-blue {
+            color: #007ac6;
+            text-align: right;
+            padding-right: 0.5rem;
+        }
+
+        .aui-title-blue span {
+            color: red
+        }
+
+        .selector {
+            border: #484848 solid 1px;
+            font-size: 0.7rem;
+            height: 1.1rem;
+            line-height: 1.1rem;
+            border-radius: 5px;
+            min-height: 1.9rem;
+            padding-left: 0.25rem;
+            color: #484848
+        }
+
+        #province {
+            width: 110%;
+            /*margin-right: 5%;*/
+            padding: 0 0.9rem 0 0.25rem;
+            /*overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;*/
+        }
+
+        #city {
+            width: 90%;
+            margin-left: 10%;
+            padding: 0 1.15rem 0 0.25rem;
+            overflow: hidden;
+            /*text-overflow: ellipsis;
+            white-space: nowrap;*/
+        }
+
+        .icon_down {
+            height: 1.9rem;
+            line-height: 1.9rem;
+            width: 0.8rem;
+            float: left;
+            position: relative;
+            color: black;
+            font-size: 0.7rem;
+            background: url('../image/meters/icon_down.png') no-repeat;
+            background-size: 90%;
+            opacity: 0.9;
+        }
+
+        #province+.icon_down {
+            top: -2rem;
+            left: 82%;
+            background-position: 0 0.75rem;
+            /*border: red solid 1px;*/
+        }
+
+        #city+.icon_down {
+            top: -2rem;
+            left: 82%;
+            background-position: 0 0.75rem;
+        }
+
+        .selector+.icon_down {
+            top: -2rem;
+            left: 88%;
+            background-position: 0 0.75rem;
+        }
+
+        .unit {
+            height: 1.9rem;
+            line-height: 1.9rem;
+            width: 2.2rem;
+            float: left;
+            position: relative;
+            color: #484848;
+            font-size: 0.6rem;
+            top: -1.9rem;
+            left: 48%;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav">
+        <div class="aui-pull-left aui-btn" onclick="turnBack()" tapmode>
+            <span class="aui-iconfont aui-icon-left"></span>
+        </div>
+        <div class="aui-title">修改电表信息</div>
+    </header>
+    <div class="aui-content">
+        <div class="formBox">
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>设备编号</div>
+                <div class="aui-col-xs-8">
+                    <input type="text" id="meterId" disabled="" />
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>设备秘钥</div>
+                <div class="aui-col-xs-8">
+                    <input type="text" id="meterKey" disabled="" />
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>设备名称</div>
+                <div class="aui-col-xs-8">
+                    <input type="text" id="name" />
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>电表类型</div>
+                <div class="aui-col-xs-8">
+                    <select id="meter_type" onchange="" class="selector">
+                        <option value="" disabled>请选择</option>
+                        <option value="1">普通电表</option>
+                    </select>
+                    <div class="icon_down"> </div>
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>相位选择</div>
+                <div class="aui-col-xs-8">
+                    <select id="phase" onchange="" class="selector">
+                        <option value="" disabled>请选择</option>
+                        <option value="123">单相</option>
+                    </select>
+                    <div class="icon_down"> </div>
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>电表单价</div>
+                <div class="aui-col-xs-8">
+                    <input type="number" id="ele_price" style="padding-right: 2.5rem;" />
+                </div>
+                <div class="unit">元/kWh</div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>电表初值</div>
+                <div class="aui-col-xs-8">
+                    <input type="number" id="initval" style="padding-right: 2rem;" />
+                </div>
+                <div class="unit">kWh</div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue"><span>*</span>所属城市</div>
+                <div class="aui-col-xs-3">
+                    <select id="province" onchange="cityonchange(this)" class="selector">
+
+                    </select>
+                    <div class="icon_down"> </div>
+                </div>
+                <div class="aui-col-xs-5">
+                    <select id="city" class="selector" onchange="changePriceScheme()">
+
+                    </select>
+                    <div class="icon_down"> </div>
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue">阶梯方案</div>
+                <div class="aui-col-xs-8">
+                    <select id="lp_id" class="selector">
+
+                    </select>
+                    <div class="icon_down"> </div>
+                </div>
+            </div>
+            <div class="aui-row">
+                <div class="aui-col-xs-4 aui-title-blue">峰平谷方案</div>
+                <div class="aui-col-xs-8">
+                    <select id="plv_id" class="selector">
+
+                    </select>
+                    <div class="icon_down"> </div>
+                </div>
+            </div>
+        </div>
+        <div class="submitEditBtn" tapmode onclick="submitEdit()">确认</div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+<script type="text/javascript" src="../script/city.js"></script>
+
+<script type="text/javascript">
+    var toast
+    var meterNum = "" //电表编号
+    // var meter_id = ""
+    var meterId = "" //电表id
+    var mkeys = "" //设备秘钥
+    var staircaseId = "" //阶梯方案id
+    var peakvalleyId = "" //峰平谷方案id
+
+    apiready = function() {
+        api.parseTapmode()
+        toast = new auiToast();
+        meterNum = api.pageParam.mid //电表编号
+        console.log("电表编号：" + meterNum)
+        getMeterMsg()
+    };
+
+    // 获取电表信息
+    function getMeterMsg() {
+        var meter_id = api.pageParam.meter_id
+        var url = HEADER + 'app/meter/check_getMeterDetailsById.do'
+        $.ajax({
+            type: 'get',
+            url: url,
+            data: {
+                "id": meter_id
+            },
+            success: function(data) {
+                // console.log(JSON.stringify(data));
+                if (data.code === 1 && data.data != null) {
+                    var json = data.data
+                    meterId = json.id
+                    // console.log("电表id：" + meterId);
+
+                    var mid = json.mid
+                    $("#meterId").val(mid) //电表编号
+
+                    mkeys = json.mkeys
+                    $("#meterKey").val(mkeys) //设备秘钥
+                    // console.log("设备秘钥:" + mkeys);
+
+                    var name = json.name
+                    $("#name").val(name) //设备名称
+                    // console.log("设备名称:" + name);
+
+                    var meterType = json.meter_type
+                    // console.log("电表类型:" + meterType);
+                    $("#meterType").val(meterType) //电表类型
+
+                    var phase = json.phase
+                    // console.log("相位:" + phase);
+                    $("#phase").val(phase) //相位
+
+                    var ele_price = json.ele_price
+                    // console.log("电费单价:" + ele_price);
+                    $("#ele_price").val(ele_price) //电费单价
+
+                    var initval = json.initval
+                    // console.log("电表初值:" + initval);
+                    $("#initval").val(initval) //电表初值
+
+
+                    var p_id = json.province_id
+                    var c_id = json.city_id
+                    // console.log("p_id:" + p_id);
+                    // console.log("c_id:" + c_id);
+                    showProvinceCity(p_id, c_id)
+
+                    staircaseId = json.lp_id
+                    peakvalleyId = json.plv_id
+                    console.log("阶梯方案Id:" + staircaseId);
+                    console.log("峰平谷方案id:"+peakvalleyId);
+                    changePriceScheme()
+                }
+
+            }
+        })
+    }
+
+    // 提交编辑
+    function submitEdit() {
+        // var mid = $("#meterId").val() //电表编号
+        // var mkeys = $("#meterKey").val() //设备秘钥
+        var name = $("#name").val() //设备名称
+        var meter_type = $("#meter_type").val() //电表类型
+        var phase = $("#phase").val() //相位
+        var ele_price = $("#ele_price").val() //电费单价
+        var initval = $("#initval").val() //电表初值
+        var province_id = $("#province").val() //省份
+        var city_id = $("#city").val() //城市
+        var lp_id = $("#lp_id").val() //阶梯方案
+        var plv_id = $("#plv_id").val() //峰平谷方案
+        console.log(meterId + "+" + meterNum + "+" + name + "+" + meter_type + "+" + phase + "+" + ele_price + "+" + initval + "+" + province_id + "+" + city_id + "+" + lp_id + "+" + plv_id);
+        if (!name || !ele_price || !initval) {
+            alert("带“*”项必须选择或填写，不能为空！")
+        } else {
+            var url = HEADER + 'app/meter/update_updateMeter.do'
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {
+                    "id": meterId,
+                    "mid": meterNum,
+                    "name": name,
+                    "mkeys": mkeys,
+                    "meter_type": meter_type,
+                    "phase": phase,
+                    "ele_price": ele_price,
+                    "initval": initval,
+                    "province_id": province_id,
+                    "city_id": city_id,
+                    "lp_id": lp_id,
+                    "plv_id": plv_id
+                },
+                success: function(data) {
+                    // console.log(JSON.stringify(data));
+                    if (data.code === 1) {
+                        // 刷新详情页数据
+                        api.sendEvent({
+                            name: 'refreshPage'
+                        });
+                        toast.success({
+                            title: "修改成功",
+                            duration: 2000
+                        });
+                        api.sendEvent({
+                            name: 'refreshPage'
+                        });
+                    } else {
+                        toast.fail({
+                            title: data.msg,
+                            duration: 2000
+                        });
+                    }
+                }
+            })
+        }
+    }
+
+    //城市改变时要改变两个电价方案
+    function changePriceScheme() {
+        var provinceid = $("#province").val()
+        var cityid = $("#city").val()
+        console.log(provinceid + '...' + cityid);
+        //获取所有阶梯方案
+        $.ajax({
+            type: "get",
+            url: HEADER + "app/meter/check_getLadderPriceProgramList.do",
+            data: {
+                province_id: provinceid,
+                city_id: cityid
+            },
+            success: function(data) {
+                // console.log(JSON.stringify(data));
+                if (data.code === 1 && data.data != null) {
+                    var jsonArr = data.data
+                    var str = '<option value="" disabled>请选择</option>';
+                    for (var i = 0; i < jsonArr.length; i++) {
+                        if (staircaseId != "") {
+                            if (staircaseId == jsonArr[i].id) {
+                                str += '<option value="' + jsonArr[i].id + '" selected>' + jsonArr[i].name + '</option>';
+                            } else {
+                                str += '<option value="' + jsonArr[i].id + '">' + jsonArr[i].name + '</option>';
+                            }
+                        } else {
+                            str += '<option value="' + jsonArr[i].id + '">' + jsonArr[i].name + '</option>';
+                        }
+                    }
+                    $("#lp_id").html(str);
+                }
+            },
+            error: function(ret) {
+                console.log(JSON.stringify(ret));
+            }
+        });
+
+        // 获取所有峰平谷方案
+        $.ajax({
+            type: "get",
+            url: HEADER + "app/meter/check_getPeakLevelValleyProgramList.do",
+            data: {
+                province_id: provinceid,
+                city_id: cityid
+            },
+            success: function(data) {
+                // console.log(JSON.stringify(data));
+                if (data.code === 1 && data.data != null) {
+                    var jsonArr = data.data
+                    var str = '<option value="" disabled>请选择</option>';
+                    for (var i = 0; i < jsonArr.length; i++) {
+                        if (peakvalleyId != "") {
+                            if (peakvalleyId == jsonArr[i].id) {
+                                str += '<option value="' + jsonArr[i].id + '" selected>' + jsonArr[i].name + '</option>';
+                            } else {
+                                str += '<option value="' + jsonArr[i].id + '">' + jsonArr[i].name + '</option>';
+                            }
+                        } else {
+                            str += '<option value="' + jsonArr[i].id + '">' + jsonArr[i].name + '</option>';
+                        }
+                    }
+                    console.log(str);
+                    $("#plv_id").html(str);
+                }
+            },
+            error: function(ret) {
+                console.log(JSON.stringify(ret));
+            }
+        });
+    }
+
+
+    /****  下面是省市联动   ****/
+
+    // 省的onchange事件
+    function cityonchange(dom) {
+        var id = $(dom).val();
+        // console.log("点击切换省份:" + id);
+        var url = HEADER + 'app/location/check_getLocationByParentId.do'
+        $.ajax({
+            type: "get",
+            url: url,
+            data: {
+                "id": id
+            },
+            success: function(data) {
+                // console.log("获取所有城市：" + JSON.stringify(data));
+                if (data.code === 1 && data.data != null) {
+                    var jsonArr = data.data
+                    var html_C = ""
+                    for (var j = 0; j < jsonArr.length; j++) {
+                        html_C += '<option value="' + jsonArr[j].id + '">' + jsonArr[j].name + '</option>'
+                    }
+                    $("#city").html(html_C)
+                    changePriceScheme()
+                }
+            }
+        })
+    }
+
+    // 改变市的内容
+    function changecity(p_id, c_id) {
+        if (!p_id && !c_id) {
+            p_id = ""
+            c_id = ""
+        }
+        var url = HEADER + 'app/location/check_getLocationByParentId.do'
+        $.ajax({
+            type: "get",
+            url: url,
+            data: {
+                "id": p_id
+            },
+            success: function(data) {
+                if (data.code === 1 && data.data != null) {
+                    var jsonArr = data.data
+                    var html_C = ""
+                    for (var j = 0; j < jsonArr.length; j++) {
+                        if (c_id != "") {
+                            if (c_id == jsonArr[j].id) {
+                                html_C += '<option value="' + jsonArr[j].id + '" selected>' + jsonArr[j].name + '</option>'
+                            } else {
+                                html_C += '<option value="' + jsonArr[j].id + '">' + jsonArr[j].name + '</option>'
+                            }
+                        } else if (c_id == "") {
+                            html_C += '<option value="' + jsonArr[j].id + '">' + jsonArr[j].name + '</option>'
+                        }
+                    }
+                    $("#city").html(html_C)
+                }
+            }
+        })
+    }
+
+    //一进页面显示原始的省份和城市
+    function showProvinceCity(p_id, c_id) {
+        if (!p_id && !c_id) {
+            p_id = ""
+            c_id = ""
+        }
+        var url = HEADER + 'app/location/check_getLocationByParentId.do'
+        $.ajax({
+            type: "get",
+            url: url,
+            data: {
+                "id": 'd87cfe59cb9b4260ac0e1c909e6350bf'
+            },
+            success: function(data) {
+                // console.log("获取所有城市："+JSON.stringify(data));
+                if (data.code === 1 && data.data != null) {
+                    var cityArr = data.data
+                    var html_P = "";
+                    for (var i = 0; i < cityArr.length; i++) {
+                        if (p_id != "") {
+                            if (cityArr[i].id == p_id) {
+                                html_P += '<option value="' + cityArr[i].id + '" selected>' + cityArr[i].name + '</option>'
+                            } else {
+                                html_P += '<option value="' + cityArr[i].id + '">' + cityArr[i].name + '</option>'
+                            }
+                            changecity(p_id, c_id)
+                        } else {
+                            html_P += '<option value="' + cityArr[i].id + '">' + cityArr[i].name + '</option>'
+                            changecity(cityArr[0].id, "")
+                        }
+                    }
+                    $("#province").html(html_P)
+                }
+            }
+        })
+    }
+</script>
+
+</html>

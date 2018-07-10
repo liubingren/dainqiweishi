@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>个人设置</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui.2.0.css" />
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        html {
+            background: white
+        }
+
+        body {
+            background: white;
+        }
+
+        .tebBtnRow {
+            text-align: center;
+            width: 92%;
+            margin: 4rem 0 0 4%;
+            border-radius: 0.3rem;
+            color: white;
+        }
+
+        .tebBtnRow div:first-of-type {
+            border-right: #fff 1px solid;
+        }
+
+        .tebBtnRow div:nth-of-type(2) {
+            border-right: #fff 1px solid;
+        }
+
+        .tebBtnRow-active {
+            padding: 0.3rem;
+            background: #3799d6;
+            font-size: 0.7rem;
+        }
+
+        .tebBtnRow-blur {
+            background: #9ed8f6;
+            padding: 0.3rem;
+            font-size: 0.7rem;
+        }
+
+        ul {
+            background: white;
+            width: 74%;
+            margin: 1.7rem 12% !important;
+        }
+
+        #updatePwdContent li {
+            margin-bottom: 0.75rem !important;
+        }
+
+        .aui-list .aui-list-item-label-icon {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+
+        .aui-radio:checked,
+        .aui-radio.aui-checked,
+        .aui-checkbox:checked,
+        .aui-checkbox.aui-checked {
+            background-color: #3799d6;
+            border: solid 1px #3799d6;
+            text-align: center;
+            background-clip: padding-box;
+        }
+
+        .aui-radio,
+        .aui-checkbox {
+            width: 0.9rem;
+            height: 0.9rem;
+            margin: 0.2rem 0 0 0;
+        }
+
+        #updatePwdContent input[type="text"],
+        #updatePwdContent input[type="password"] {
+            font-size: 0.7rem;
+            border-bottom: #3799d6 solid 1px;
+            min-height: 0.9rem;
+            position: relative;
+            bottom: 0.1rem
+        }
+
+        .iconbox-password-old {
+            /*border: #000 solid 1px;*/
+            height: 2rem;
+            background-image: url('../image/setting/oldpwd.png');
+            background-size: 85%;
+            background-repeat: no-repeat;
+            background-position: 0px 0.3rem;
+        }
+
+        .iconbox-password {
+            /*border: #000 solid 1px;*/
+            height: 2rem;
+            background-image: url('../image/setting/locked.png');
+            background-size: 85%;
+            background-repeat: no-repeat;
+            background-position: 0px 0.3rem;
+        }
+
+        .iconbox-password-ensure {
+            height: 2rem;
+            background-image: url('../image/setting/lock_corret.png');
+            background-size: 85%;
+            background-repeat: no-repeat;
+            background-position: 0px 0.3rem;
+        }
+
+        #updatePwdContent {
+            padding-top: 1rem;
+        }
+
+        #userMsgContent .boxCss {
+            border: #484848 solid 1px;
+            border-radius: 5px;
+            padding-left: 0.3rem
+        }
+
+        #userMsgContent .boxCss input,
+        #userMsgContent .boxCss select {
+            min-height: 1.55rem
+        }
+
+        .cancelBtn {
+            width: 4rem;
+            margin-right: 1.5rem;
+            padding: 0.5rem 0;
+            background: #ececec;
+            color: #535f6b;
+        }
+        /*.canselBtn:first-of-type{
+            margin-top: 1rem
+        }
+        .canselBtn:first-of-type+div{
+            margin-top: 1rem
+        }*/
+
+        .submitBtn {
+            width: 4rem;
+            margin-left: 1.5rem;
+            padding: 0.5rem 0;
+            background: #3799d6;
+            color: white;
+        }
+        /*.title_pwd{
+            font-size: 0.8rem;
+            height: 1rem;
+            line-height: 1rem;
+            text-align: center;
+        }*/
+    </style>
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav">
+        <div class="aui-pull-left aui-btn" onclick="turnBack()" tapmode>
+            <span class="aui-iconfont aui-icon-left"></span>
+        </div>
+        <div class="aui-title">修改密码</div>
+    </header>
+    <div class="aui-content">
+        <!-- <p class="title_pwd">修改密码</p> -->
+        <div class="aui-row tebBtnRow">
+            <!-- <div class="aui-col-xs-6 tebBtnRow-active" id="userMsg" tapmode onclick="clickTab(1)">个人信息</div> -->
+            <!-- <div class="aui-col-xs-6 tebBtnRow-blur" id="updatePwd" tapmode onclick="clickTab(2)">修改密码</div> -->
+        </div>
+        <!-- <div id="userMsgContent">
+            <ul class="aui-list aui-form-list">
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            用户名
+                        </div>
+                        <div class="aui-list-item-input" id="username">
+                            WLG
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            角&nbsp;&nbsp;&nbsp;色
+                        </div>
+                        <div class="aui-list-item-input" id="userroll">
+                            维保人员
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            性&nbsp;&nbsp;&nbsp;别
+                        </div>
+                        <div class="aui-list-item-input" id="sex">
+                            <label><input class="aui-radio" type="radio" name="sex" value="男" checked="true"> 男</label>
+                            <label><input class="aui-radio" type="radio" value="女" name="sex"> 女</label>
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            姓&nbsp;&nbsp;&nbsp;名
+                        </div>
+                        <div class="aui-list-item-input boxCss">
+                            <input type="text" placeholder="请输入姓名" id="name">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            手&nbsp;&nbsp;&nbsp;机
+                        </div>
+                        <div class="aui-list-item-input boxCss">
+                            <input type="text" placeholder="请输入手机号码" id="phonenumber" onblur="checkPhonenumber(this)">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner">
+                        <div class="aui-list-item-label">
+                            邮&nbsp;&nbsp;&nbsp;箱
+                        </div>
+                        <div class="aui-list-item-input boxCss">
+                            <input type="text" placeholder="请输入邮箱" id="email" onblur="checkEmail(this)">
+                        </div>
+                    </div>
+                </li>
+                <li class="aui-list-item">
+                    <div class="aui-list-item-inner aui-list-item-center aui-list-item-btn">
+                        <div class="aui-btn cancelBtn" style="margin-top:1rem" tapmode onclick="cancelUser()">重置</div>
+                        <div class="aui-btn submitBtn" style="margin-top:1rem" tapmode onclick="submitUser()">确认</div>
+                    </div>
+                </li>
+            </ul>
+        </div> -->
+        <ul class="aui-list aui-form-list" id="updatePwdContent">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label-icon iconbox-password-old">
+
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="password" id="oldpwd" placeholder="请输入旧密码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label-icon iconbox-password">
+
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="password" id="newpwd" placeholder="请输入新密码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label-icon iconbox-password-ensure">
+
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="password" id="ensurenewpwd" placeholder="请再次确认新密码">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner aui-list-item-center aui-list-item-btn">
+                    <div class="aui-btn cancelBtn" tapmode onclick="cancelPwd()">重置</div>
+                    <div class="aui-btn submitBtn" tapmode onclick="submitPwd()">确认</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../script/common.js"></script>
+<script type="text/javascript" src="../script/aui-toast.js"></script>
+<script type="text/javascript">
+    var username = ""
+    var rollname = ""
+    var toast
+    apiready = function() {
+        $("#oldpwd").val("")
+        $("#newpwd").val("")
+        $("#ensurenewpwd").val("")
+        api.parseTapmode()
+        toast = new auiToast({})
+        // initMsg()
+    };
+
+    // 更新密码
+    function submitPwd() {
+        var oldpwd = $("#oldpwd").val()
+        var newpwd = $("#newpwd").val()
+        var ensurenewpwd = $("#ensurenewpwd").val()
+        if (oldpwd && newpwd && ensurenewpwd) {
+            if (oldpwd != newpwd) {
+                if (newpwd == ensurenewpwd) {
+                    var url = HEADER + 'app/user/update_modifyUserPassword.do';
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        data: {
+                            // "username": username, //(required)用户名query string
+                            "newPasd": newpwd, //密码query string
+                            "confirmPasd": ensurenewpwd, //(required)用户名称query string
+                            "oldPasd": oldpwd //旧密码
+                        },
+                        success: function(data) {
+                            console.log(JSON.stringify(data));
+                            if (data.code === 1) {
+                                toast.success({
+                                    title: "请重新登录!",
+                                    duration: 2000
+                                });
+                                setTimeout(function(){
+                                    api.sendEvent({
+                                        name: 'quitLogin'
+                                    });
+                                },1000)
+                            } else {
+                                toast.fail({
+                                    title: data.msg,
+                                    duration: 2000
+                                });
+                            }
+                        }
+                    })
+                } else {
+                    toast.fail({
+                        title: "两次密码输入不一致！",
+                        duration: 2000
+                    })
+                }
+            } else {
+                toast.fail({
+                    title: "新密码不能与旧密码相同！",
+                    duration: 2000
+                })
+            }
+        } else {
+            toast.fail({
+                title: "请认真填写密码！",
+                html: '<i class="aui-iconfont aui-icon-info"></i>',
+                duration: 2000
+            })
+        }
+    }
+
+    // 重置修改密码
+    function cancelPwd() {
+        $("#oldpwd").val("")
+        $("#newpwd").val("")
+        $("#ensurenewpwd").val("")
+    }
+
+    // 手机号格式
+    // function checkPhonenumber(dom) {
+    //     var num = $(dom).val()
+    //     var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+    //     if (num === "") { //输入不能为空
+    //         alert("手机号码不能为空!");　　　　
+    //         return false;
+    //     } else if (!myreg.test(num)) {
+    //         alert("手机号格式不正确!");
+    //         $(dom).val("")
+    //         return false;
+    //     } else {
+    //         return true;
+    //     }
+    // }
+
+    // 邮箱格式验证
+    // function checkEmail(dom) {
+    //     var email = $(dom).val();
+    //     var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+    //     if (email === "") { //输入不能为空
+    //         alert("邮箱不能为空!");　　　　
+    //         return false;　　
+    //     } else if (!reg.test(email)) { //正则验证不通过，格式不对
+    //         alert("邮箱格式不正确!");　　　　
+    //         $(dom).val("")
+    //         return false;　　
+    //     } else {　　　　
+    //         return true;　　
+    //     }
+    // }
+
+    // // 获取用户信息
+    // function initMsg() {
+    //     $.ajax({
+    //         type: "get",
+    //         url: HEADER + 'app/user/check_getUserInfo.do',
+    //         success: function(data) {
+    //             // console.log(JSON.stringify(data));
+    //             if (data.code == "1" || data.code == 1) {
+    //                 var json = data.data;
+    //                 username = json.username; //用户名
+    //                 console.log("username" + username)
+    //                 $("#username").html(username)
+    //                 rollname = json.rolename; //角色
+    //                 $("#userroll").html(rollname)
+    //                 sex = json.sex;
+    //                 if (sex == "男") {
+    //                     $('#sex input[name="sex"]').eq(1).removeProp('checked');
+    //                     $('#sex input[name="sex"]').eq(0).prop('checked', 'checked');
+    //                 } else if (sex == "女") {
+    //                     $('#sex input[name="sex"]').eq(0).removeProp('checked');
+    //                     $('#sex input[name="sex"]').eq(1).prop('checked', 'checked');
+    //                 }
+    //                 var name = json.name
+    //                 $("#name").val(name)
+    //                 var phonenumber = json.phonenumber;
+    //                 $("#phonenumber").val(phonenumber)
+    //                 var email = json.email;
+    //                 $("#email").val(email)
+    //             }
+    //         }
+    //     })
+    // }
+    //
+    // // 更新个人信息
+    // function submitUser() {
+    //     var name = $("#name").val()
+    //     var phonenumber = $("#phonenumber").val()
+    //     var email = $("#email").val()
+    //     var sex = $('#sex input[name="sex"]:checked').val()
+    //     console.log(username + "+" + name + "+" + phonenumber + "+" + email + "+" + sex);
+    //     var url = HEADER + 'app/user/update_UserByself.do';
+    //     // var phone_flag = checkPhonenumber(phonenumber)
+    //     // var email_flag = checkEmail(email)
+    //     // if(phone_flag){
+    //     //     if(email_flag){
+    //     $.ajax({
+    //             type: "post",
+    //             url: url,
+    //             data: {
+    //                 "username": username, //(required)用户名query string
+    //                 "name": name, //(required)用户名称query string
+    //                 "phonenumber": phonenumber, //手机号码query string
+    //                 "email": email, //邮箱query string
+    //                 "sex": sex //(required)性别query string
+    //             },
+    //             success: function(data) {
+    //                 console.log(JSON.stringify(data));
+    //                 if (data.code == 1) {
+    //                     toast.success({
+    //                         title: "提交成功",
+    //                         duration: 2000
+    //                     });
+    //                     initMsg()
+    //                 } else {
+    //                     toast.fail({
+    //                         title: data.msg,
+    //                         duration: 2000
+    //                     });
+    //                 }
+    //             }
+    //         })
+    //         //     }else{
+    //         //         alert("邮箱格式不正确!");　　　　
+    //         //     }
+    //         // }else{
+    //         //     alert("手机号格式不正确!");　
+    //         // }
+    // }
+    //
+    //
+    //
+    // // 重置个人信息
+    // function cancelUser() {
+    //     if (sex == "男") {
+    //         $('#sex input[name="sex"]').eq(1).removeProp('checked');
+    //         $('#sex input[name="sex"]').eq(0).prop('checked', 'checked');
+    //     } else if (sex == "女") {
+    //         $('#sex input[name="sex"]').eq(0).removeProp('checked');
+    //         $('#sex input[name="sex"]').eq(1).prop('checked', 'checked');
+    //     }
+    //     $("#name").val("")
+    //     $("#phonenumber").val("")
+    //     $("#email").val("")
+    // }
+    //
+    //
+    // // 点击切换
+    // function clickTab(type) {
+    //     switch (type) {
+    //         case 1:
+    //             $("#updatePwd").removeClass("tebBtnRow-active").addClass("tebBtnRow-blur");
+    //             $("#userMsg").removeClass("tebBtnRow-blur").addClass("tebBtnRow-active"); //个人信息
+    //             $("#updatePwdContent").css("display", "none");
+    //             $("#userMsgContent").css("display", "block");
+    //             break;
+    //         case 2:
+    //             $("#userMsg").removeClass("tebBtnRow-active").addClass("tebBtnRow-blur");
+    //             $("#updatePwd").removeClass("tebBtnRow-blur").addClass("tebBtnRow-active"); //修改密码
+    //             $("#userMsgContent").css("display", "none");
+    //             $("#updatePwdContent").css("display", "block");
+    //             break;
+    //     }
+    // }
+</script>
+
+</html>
